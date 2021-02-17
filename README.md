@@ -17,9 +17,9 @@ Used for the development environment. Merge is performed from the branches creat
 
 Used for the validation environment. Merge is performed to develop branch.
 
-`feat`: For features developing
-`chore`: For additional feature development of features
-`fix`: For bug fixing
-`test`: For test development
+`feat`: For features developing \
+`chore`: For additional feature development of features \
+`fix`: For bug fixing \
+`test`: For test development \
 
 **Note: These prefixes can be change in the future!**
