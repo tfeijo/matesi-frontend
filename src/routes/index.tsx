@@ -20,8 +20,12 @@ import EnrollMailbox from '../pages/private/Mailbox/Enroll';
 
 import Students from '../pages/private/Students';
 
+import UnderConstruction from '../pages/public/UnderConstruction';
+
 const Routes = () => (
   <Switch>
+    <Route path="*" component={UnderConstruction} />
+
     <Route path="/" exact component={Home} />
 
     <Route path="/cursos/ingles" component={English} />
