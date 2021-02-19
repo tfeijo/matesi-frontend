@@ -4,17 +4,17 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyles from './styles/global';
 import theme from './styles/theme';
 
-import Footer from './components/Footer';
-import Header from './components/Header';
+// import Footer from './components/Footer';
+// import Header from './components/Header';
 import Routes from './routes';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <Header />
+        {/* <Header /> */}
         <Routes />
-        <Footer />
+        {/* <Footer /> */}
         <GlobalStyles />
       </BrowserRouter>
     </ThemeProvider>

@@ -9,14 +9,9 @@ export default createGlobalStyle`
     --font-family-heading: 'Montserrat', sans-serif;
     --font-family-body: 'B612', sans-serif;
 
-    --font-display-1: 900 7.2rem/1 var(--font-family-heading);
-    --font-display-2: 900 4.8rem/1.2 var(--font-family-heading);
-    --font-headline: 600 3.6rem/1.2 var(--font-family-heading);
-
-    // Apply these in the mobile breakpoint
-    // --font-display-1: 900 4.8rem/1 var(--font-family-heading);
-    // --font-display-2: 900 3.6rem/1.2 var(--font-family-heading);
-    // --font-headline: 600 2.8rem/1.2 var(--font-family-heading);
+    --font-display-1: 900 clamp(4.8rem, 10vw, 7.2rem) / 1 var(--font-family-heading);
+    --font-display-2: 900 clamp(3.6rem, 10vw, 4.8rem) / 1.2 var(--font-family-heading);
+    --font-headline: 600 clamp(2.8rem, 5vw, 3.6rem) / 1.2 var(--font-family-heading);
 
     --font-subheading-1: 600 2.4rem/1.2 var(--font-family-heading);
     --font-subheading-2: 600 2.1rem/1.2 var(--font-family-heading);
@@ -37,6 +32,7 @@ export default createGlobalStyle`
   }
   html, body, #root {
     height: 100vh;
+    position: relative;
   }
 
   body {
