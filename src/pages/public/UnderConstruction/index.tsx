@@ -10,7 +10,7 @@ const UnderConstruction: React.FC = () => {
       <Content>
         <Logo src={logoBlack} alt="MATESI Idiomas" />
         <h1>Site em construção</h1>
-        <h2>Venha para a a MATESI idiomas, sua passagem para o sucesso</h2>
+        <h2>Venha para a a MATESI idiomas, sua passagem para o sucesso está aqui!</h2>
         <p>
           Ensinamos idiomas com foco comunicativo e cultural a partir dos 13
           anos.
