@@ -6,6 +6,9 @@ export const Container = styled.header`
   padding-top: 1rem;
   padding-bottom: 1rem;
   background-color: ${({ theme }) => theme.colors.red_base};
+  position: sticky;
+  top: 0;
+  z-index: 99999999999;
 `;
 
 export const Content = styled.div`
@@ -48,11 +51,12 @@ export const Navigation = styled.div`
 `;
 
 export const NavMenu = styled.nav<{ isOpen: boolean }>`
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
+  z-index: 9999999;
   background-color: ${({ theme }) => theme.colors.red_base};
   transform: translateX(-100%);
   transition: transform 0.4s ease;
@@ -108,15 +112,15 @@ export const NavMenu = styled.nav<{ isOpen: boolean }>`
 
       a.enroll-button {
         text-decoration: none;
-      }
 
-      > button {
-        width: 100%;
-        height: 5.6rem;
+        > button {
+          width: 100%;
+          height: 5.6rem;
 
-        @media screen and (min-width: 850px) {
-          width: unset;
-          height: unset;
+          @media screen and (min-width: 850px) {
+            width: unset;
+            height: unset;
+          }
         }
       }
     }
