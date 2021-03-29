@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import { darken, lighten } from 'polished';
+import variables from './variables';
 
 export default createGlobalStyle`
 
@@ -23,6 +23,8 @@ export default createGlobalStyle`
     --font-paragraph-small: 400 1.4rem/1.5 var(--font-family-body);
 
     --font-button: 700 1.6rem/1.5 var(--font-family-body);
+
+    ${variables}
   }
 
   * {
@@ -36,17 +38,29 @@ export default createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => lighten(0.35, theme.colors.silver_base)};
+    background: var(--color-background);
   }
 
   body, input, textarea {
-    font: var(--font-paragraph);
-    color: ${({ theme }) => theme.colors.gray_base};
+    font: var(--font-body-normal);
+    color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: ${({ theme }) => darken(0.15, theme.colors.gray_base)};
-    font-family: var(--font-family-heading);
+    color: var(--color-title-active);
+  }
+
+  img {
+    width: 100%;
+  }
+
+  a {
+    text-decoration: none;
+    font: var(--font-body-normal);
+  }
+
+  ul li {
+    list-style-type: none;
   }
 
 `;
