@@ -1,121 +1,172 @@
-import { darken, lighten, transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-interface IProps {
-  size: 'normal' | 'large' | 'small';
-  iconOnly: boolean;
+export type TCustomButton = {
+  color?: 'primary' | 'secondary' | 'danger' | 'neutral' | 'light';
+  variant?: 'fill' | 'outline' | 'ghost';
+  size?: 'large' | 'medium' | 'small';
+  block?: boolean;
+};
+
+type TProps = TCustomButton & { iconOnly?: boolean };
+
+type GetPaddingProps = Omit<TProps, 'variant'>;
+type GetIconSizeProps = Pick<TProps, 'size'>;
+type GetColorFunctionsProps = Pick<TProps, 'variant' | 'color'>;
+
+function getPadding({ size, iconOnly }: GetPaddingProps) {
+  if (iconOnly) {
+    if (size === 'large') return '1.5rem';
+    if (size === 'medium') return '.9rem';
+    if (size === 'small') return '0.7rem';
+  }
+
+  if (size === 'large') return '1.9rem 3.9rem';
+  if (size === 'medium') return '1.1rem 2.3rem';
+  if (size === 'small') return '.7rem 1.5rem';
+
+  return 'Invalid property';
 }
 
-export const CustomButton = styled.button<IProps>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font: var(--font-button);
-  letter-spacing: 0.05rem;
-  border: 1px solid transparent;
-  border-radius: ${({ theme }) => theme.radius};
-  transition: background 0.3s ease;
-  background: transparent;
-  cursor: pointer;
+function getIconSize({ size }: GetIconSizeProps) {
+  if (size === 'large') return '2.8rem';
+  if (size === 'medium') return '2.4rem';
+  if (size === 'small') return '2rem';
 
-  ${props =>
-    props.iconOnly
-      ? css`
-          padding: 0.5625em;
-        `
-      : css`
-          svg {
-            margin-left: 4rem;
-          }
-        `}
+  return 'Invalid property';
+}
+
+function getBackgroundColor({ variant, color }: GetColorFunctionsProps) {
+  if (variant === 'fill') {
+    if (color === 'primary') return 'var(--color-primary-default)';
+    if (color === 'secondary') return 'var(--color-secondary-default)';
+    if (color === 'danger') return 'var(--color-danger-default)';
+    if (color === 'neutral') return 'var(--color-label)';
+    if (color === 'light') return 'var(--color-off-white)';
+  }
+
+  return 'transparent';
+}
+
+function getBorderColor({ variant, color }: GetColorFunctionsProps) {
+  if (variant === 'outline') {
+    if (color === 'primary') return 'var(--color-primary-light)';
+    if (color === 'secondary') return 'var(--color-secondary-light)';
+    if (color === 'danger') return 'var(--color-danger-light)';
+    if (color === 'neutral') return 'var(--color-line)';
+    if (color === 'light') return 'var(--color-light-transparent-40)';
+  }
+
+  return 'transparent';
+}
+
+function getColor({ variant, color }: GetColorFunctionsProps) {
+  if (color === 'light') {
+    return variant === 'fill'
+      ? 'var(--color-title-active)'
+      : 'var(--color-off-white)';
+  }
+
+  return variant === 'fill'
+    ? 'var(--color-off-white)'
+    : getBackgroundColor({ variant: 'fill', color });
+}
+
+function getHoverBackground({ variant, color }: GetColorFunctionsProps) {
+  if (variant === 'fill') {
+    if (color === 'primary') return 'var(--color-primary-dark)';
+    if (color === 'secondary') return 'var(--color-secondary-dark)';
+    if (color === 'danger') return 'var(--color-danger-dark)';
+    if (color === 'neutral') return 'var(--color-body)';
+    if (color === 'light') return 'var(--color-line)';
+  }
+
+  if (color === 'primary') return 'var(--color-primary-lighter)';
+  if (color === 'secondary') return 'var(--color-secondary-lighter)';
+  if (color === 'danger') return 'var(--color-danger-lighter)';
+  if (color === 'neutral') return 'var(--color-line)';
+  if (color === 'light') return 'var(--color-light-transparent-20)';
+
+  return 'Invalid property';
+}
+
+function getFocusRingColor({ color }: GetColorFunctionsProps) {
+  if (color === 'primary') return 'var(--color-primary-light)';
+  if (color === 'secondary') return 'var(--color-secondary-light)';
+  if (color === 'danger') return 'var(--color-danger-light)';
+  if (color === 'neutral') return 'var(--color-placeholder)';
+  if (color === 'light') return 'var(--color-line)';
+
+  return 'Invalid property';
+}
+
+function getActiveBackground({ variant, color }: GetColorFunctionsProps) {
+  if (variant === 'fill') {
+    if (color === 'primary') return 'var(--color-primary-darker)';
+    if (color === 'secondary') return 'var(--color-secondary-darker)';
+    if (color === 'danger') return 'var(--color-danger-darker)';
+    if (color === 'neutral') return 'var(--color-title-active)';
+    if (color === 'light') return 'var(--color-placeholder)';
+  }
+
+  if (color === 'primary') return 'var(--color-primary-light)';
+  if (color === 'secondary') return 'var(--color-secondary-light)';
+  if (color === 'danger') return 'var(--color-danger-light)';
+  if (color === 'neutral') return 'var(--color-placeholder)';
+  if (color === 'light') return 'var(--color-light-transparent-40)';
+
+  return 'Invalid property';
+}
+
+export const CustomButton = styled.button<TProps>`
+  ${({ size, iconOnly, block }) => css`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: ${block ? '100%' : 'initial'};
+
+    background: transparent;
+    border: 0.1rem solid transparent;
+    font: var(--font-button);
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+
+    padding: ${getPadding};
+    border-radius: var(--radius-${size});
+
+    svg {
+      height: ${size === 'small' ? '1.8rem' : '2rem'};
+      width: ${size === 'small' ? '1.8rem' : '2rem'};
+
+      margin-left: ${iconOnly ? 'unset' : '0.8rem;'};
+
+      ${iconOnly &&
+      css`
+        height: ${getIconSize({ size })};
+        width: ${getIconSize({ size })};
+      `};
+    }
+  `}
+
+  background-color: ${getBackgroundColor};
+  border-color: ${getBorderColor};
+  color: ${getColor};
+
+  &:hover {
+    background-color: ${getHoverBackground};
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.3rem ${getFocusRingColor};
+  }
+
+  &:active {
+    background-color: ${getActiveBackground};
+  }
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.3;
     cursor: not-allowed;
     pointer-events: none;
-  }
-
-  ${props =>
-    props.size === 'normal' &&
-    !props.iconOnly &&
-    css`
-      padding: 0.5625em 1.5em;
-    `}
-
-  ${props =>
-    props.size === 'large' &&
-    !props.iconOnly &&
-    css`
-      padding: 0.875em 1.75em;
-    `}
-
-  ${props =>
-    props.size === 'small' &&
-    !props.iconOnly &&
-    css`
-      font-size: 1.4rem;
-      padding: 0.5714em 1.1428em;
-
-      svg {
-        margin-left: 0.8rem;
-        height: 20px;
-        width: 20px;
-      }
-    `}
-
-  &.primary {
-    background-color: ${({ theme }) => theme.colors.red_base};
-    color: ${({ theme }) => theme.colors.white};
-
-    &:hover {
-      background-color: ${({ theme }) => darken(0.1, theme.colors.red_base)};
-    }
-  }
-
-  &.secondary {
-    background-color: ${({ theme }) => lighten(0.3, theme.colors.silver_base)};
-    color: ${({ theme }) => darken(0.15, theme.colors.gray_base)};
-
-    &:hover {
-      background-color: ${({ theme }) =>
-        lighten(0.2, theme.colors.silver_base)};
-    }
-  }
-
-  &.outline-white {
-    border-color: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.white};
-
-    &:hover {
-      background-color: ${({ theme }) =>
-        transparentize(0.7, theme.colors.white)};
-    }
-  }
-
-  &.ghost-white {
-    color: ${({ theme }) => theme.colors.white};
-
-    &:hover {
-      background-color: ${({ theme }) =>
-        transparentize(0.7, theme.colors.white)};
-    }
-  }
-
-  &.ghost-yellow {
-    color: ${({ theme }) => theme.colors.yellow_base};
-
-    &:hover {
-      background-color: ${({ theme }) =>
-        transparentize(0.8, theme.colors.yellow_base)};
-    }
-  }
-
-  &.ghost-red {
-    color: ${({ theme }) => theme.colors.red_base};
-
-    &:hover {
-      background-color: ${({ theme }) =>
-        transparentize(0.8, theme.colors.red_base)};
-    }
   }
 `;
