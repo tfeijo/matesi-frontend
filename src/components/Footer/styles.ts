@@ -1,107 +1,125 @@
-import { darken, lighten } from 'polished';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
 import { container } from '../../styles/shared';
+import mediaQuery from '../../utils/mediaQuery';
 
-export const Container = styled.footer`
-  background: ${({ theme }) => darken(0.15, theme.colors.red_base)};
-`;
-
-export const ContentContainer = styled.div`
+const containerWithVerticalPadding = css`
   ${container}
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  padding-top: 3.2rem;
+  padding-bottom: 3.2rem;
 `;
 
-export const TopContent = styled.div`
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.md}) {
+export const Background = styled.footer`
+  background: var(--color-secondary-dark);
+`;
+
+export const MainContent = styled.div`
+  ${containerWithVerticalPadding}
+
+  ${mediaQuery.custom(800)} {
     display: flex;
     justify-content: space-between;
+
+    padding-top: 4.8rem;
+    padding-bottom: 4.8rem;
+  }
+`;
+
+export const About = styled.div`
+  div {
+    display: flex;
+    align-items: center;
+    margin-top: 3.2rem;
+    margin-bottom: 3.2rem;
+
+    ${mediaQuery.tabletPortraitUp} {
+      margin-top: 4rem;
+      margin-bottom: 4rem;
+    }
+
+    a + a {
+      margin-left: 2.4rem;
+    }
+  }
+`;
+
+export const Sitemap = styled.div`
+  margin-top: 4.8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-gap: 4rem;
+
+  ${mediaQuery.custom(800)} {
+    margin-top: 0;
+    grid-template-columns: repeat(3, max-content);
+    gap: 6.4rem;
+  }
+
+  ${mediaQuery.tabletLandscapeUp} {
     gap: 9.6rem;
   }
 
-  .cta-content {
-    img {
-      width: 20rem;
-    }
+  h3 {
+    font: var(--font-body-normal-heavy);
+    margin-bottom: 1.6rem;
+    color: var(--color-off-white);
+  }
 
-    > div {
-      display: flex;
-      align-items: center;
-      margin-top: 3.2rem;
-      margin-bottom: 3.2rem;
+  ul > li + li {
+    margin-top: 0.2rem;
 
-      button + button {
-        margin-left: 1rem;
-      }
+    ${mediaQuery.tabletLandscapeUp} {
+      margin-top: 0.6rem;
     }
   }
 
-  .sitemap {
-    margin-top: 4.8rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    grid-gap: 4rem;
+  a {
+    width: 100%;
+    display: inline-block;
+    padding: 0.4rem 0;
+    color: var(--color-input-background);
+    transition: opacity 0.2s;
 
-    @media screen and (min-width: ${({ theme }) => theme.breakpoints.md}) {
-      margin-top: 0;
-      grid-template-columns: repeat(3, min-content);
-      gap: 8rem;
+    ${mediaQuery.tabletLandscapeUp} {
+      display: initial;
+      padding: 0;
     }
 
-    @media screen and (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-      gap: 9.6rem;
+    &:hover {
+      opacity: 0.5;
     }
 
-    h3 {
-      font: var(--font-paragraph-bold);
-      margin-bottom: 2rem;
-      color: ${({ theme }) => theme.colors.white};
-    }
-
-    ul li {
-      list-style: none;
-      padding: 0.4rem 0;
-
-      a {
-        width: 100%;
-        display: inline-block;
-        text-decoration: none;
-        color: ${({ theme }) => theme.colors.white};
-        transition: opacity 0.2s;
-
-        &:hover {
-          opacity: 0.5;
-        }
-
-        @media screen and (min-width: ${({ theme }) => theme.breakpoints.md}) {
-          width: unset;
-          padding: initial;
-        }
-      }
+    &:focus {
+      border-radius: var(--radius-small);
+      outline: 0;
+      box-shadow: 0 0 0 0.3rem var(--color-placeholder);
     }
   }
 `;
 
 export const Divider = styled.hr`
-  height: 2px;
+  height: 0.2rem;
   width: 100%;
   border: 0;
-  background-color: ${({ theme }) => darken(0.2, theme.colors.red_base)};
+  background-color: var(--color-secondary-darker);
 `;
 
-export const BottomContent = styled.div`
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.md}) {
+export const Copyright = styled.div`
+  ${containerWithVerticalPadding};
+
+  ${mediaQuery.tabletPortraitUp} {
     display: flex;
     justify-content: space-between;
   }
 
   p {
-    color: ${({ theme }) => lighten(0.1, theme.colors.silver_base)};
-    font: var(--font-paragraph-small);
-    margin-bottom: 1.6rem;
+    font: var(--font-body-small);
+    color: var(--color-placeholder);
 
-    @media screen and (min-width: ${({ theme }) => theme.breakpoints.md}) {
-      margin-bottom: 0;
+    & + p {
+      ${mediaQuery.phoneOnly} {
+        margin-top: 1.6rem;
+      }
     }
   }
 `;

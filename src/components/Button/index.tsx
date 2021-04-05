@@ -1,34 +1,67 @@
-import { ButtonHTMLAttributes } from 'react';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import { IconBaseProps } from 'react-icons';
+import { Link, LinkProps } from 'react-router-dom';
 
-import { CustomButton } from './styles';
+import { CustomButton, TCustomButton } from './styles';
 
-interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'outline-white'
-    | 'ghost-white'
-    | 'ghost-yellow'
-    | 'ghost-red';
-  size?: 'normal' | 'large' | 'small';
-  icon?: React.ComponentType<IconBaseProps>;
-  iconOnly?: boolean;
-}
+type THTMLButton = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button: React.FC<IProps> = ({
-  variant = 'primary',
-  size = 'normal',
+type THTMLAnchor = AnchorHTMLAttributes<HTMLAnchorElement>;
+
+type TIcon = React.ComponentType<IconBaseProps>;
+
+type IconProps =
+  | { iconOnly?: false; icon?: TIcon; children?: React.ReactNode }
+  | { iconOnly: true; icon: TIcon; children?: never };
+
+type Props<L, E> = TCustomButton & IconProps & { asLink?: L; external?: E };
+
+type ButtonProps = THTMLButton & Props<false, false>;
+type InternalLinkProps = LinkProps & Props<true, false>;
+type ExternalLinkProps = THTMLAnchor & Props<true, true>;
+
+function Button({
+  asLink,
+  external,
+  color = 'primary',
+  variant = 'fill',
+  size = 'medium',
+  block,
+  iconOnly,
   icon: Icon,
+  type = 'button',
   children,
-  iconOnly = false,
   ...rest
-}) => {
+}: ButtonProps | InternalLinkProps | ExternalLinkProps) {
+  const linkType = external ? 'a' : Link;
+  const as = asLink ? linkType : 'button';
+
+  const externalLinkProps = {
+    target: '_blank',
+    rel: 'noreferrer noopener',
+  };
+
+  let extraProps;
+
+  if (asLink) {
+    if (external) extraProps = { ...externalLinkProps };
+  } else extraProps = { type };
+
   return (
-    <CustomButton className={variant} size={size} iconOnly={iconOnly} {...rest}>
-      {!iconOnly && children} {Icon && <Icon size={24} />}
+    <CustomButton
+      as={as}
+      color={color}
+      variant={variant}
+      size={size}
+      iconOnly={iconOnly}
+      block={block}
+      {...extraProps}
+      {...rest}
+    >
+      {iconOnly ?? children}
+      {Icon && <Icon size={24} />}
     </CustomButton>
   );
-};
+}
 
 export default Button;
