@@ -31,6 +31,7 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setIsMenuOpen(false);
     setIsDropdownOpen(false);
+    document.body.style.overflow = 'initial';
   }, [location]);
 
   function openMenu() {
