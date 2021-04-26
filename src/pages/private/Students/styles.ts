@@ -4,11 +4,17 @@ import mediaQuery from '../../../utils/mediaQuery';
 
 export const Container = styled.section`
   ${container}
-  padding-top: 2.4rem;
+  margin-top: 2.4rem;
+
+  ${mediaQuery.tabletPortraitUp} {
+    margin-top: 4.8rem;
+  }
 
   ${mediaQuery.tabletLandscapeUp} {
     --grid-columns-table-style: 1.6fr 1.2fr 1.5fr 0.9fr;
     --grid-gap-table-style: 1.2rem;
+
+    margin-top: 6.4rem;
   }
 `;
 
@@ -232,5 +238,21 @@ export const Footer = styled.footer`
     color: var(--color-placeholder);
     text-align: center;
     margin-bottom: 1.6rem;
+  }
+
+  ${mediaQuery.tabletPortraitUp} {
+    margin-bottom: 7.2rem;
+  }
+
+  ${mediaQuery.tabletLandscapeUp} {
+    margin-bottom: 9.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p {
+      margin-bottom: 0;
+      margin-left: 2.4rem;
+    }
   }
 `;

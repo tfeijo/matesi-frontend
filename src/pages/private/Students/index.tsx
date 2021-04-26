@@ -13,6 +13,7 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 
 import { Container, Header, Filters, List, Courses, Footer } from './styles';
+import Pagination from '../../../components/Pagination';
 
 const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   english: UsaFlag,
@@ -164,6 +165,11 @@ const Students: React.FC = () => {
 
       <Footer>
         <p>Mostrando 1-10 de 20</p>
+
+        <Pagination
+          totalPages={20}
+          onPageChange={page => alert(`A página atual é ${page}`)}
+        />
       </Footer>
     </Container>
   );
