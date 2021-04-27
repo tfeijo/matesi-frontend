@@ -92,6 +92,8 @@ export const Header = styled.header`
   }
 
   .dropdown {
+    width: 100%;
+
     button {
       width: 100%;
     }

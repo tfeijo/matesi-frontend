@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { MdImportExport, MdKeyboardArrowDown, MdSearch } from 'react-icons/md';
+import { MdImportExport, MdSearch } from 'react-icons/md';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
@@ -14,6 +14,7 @@ import Input from '../../../components/Input';
 
 import { Container, Header, Filters, List, Courses, Footer } from './styles';
 import Pagination from '../../../components/Pagination';
+import Dropdown from '../../../components/Dropdown';
 
 const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   english: UsaFlag,
@@ -91,25 +92,38 @@ const Students: React.FC = () => {
 
           <Filters>
             <div className="buttons">
-              <div className="dropdown">
-                <Button
-                  icon={MdKeyboardArrowDown}
-                  color="neutral"
-                  variant="outline"
-                >
-                  Ordenar
-                </Button>
-              </div>
+              <Dropdown className="dropdown" triggerTitle="Ordenar">
+                <Dropdown.Item>
+                  <button type="button">Nome: Asc</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">Nome: Desc</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">E-mail: Asc</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">E-mail: Desc</button>
+                </Dropdown.Item>
+              </Dropdown>
 
-              <div className="dropdown">
-                <Button
-                  icon={MdKeyboardArrowDown}
-                  color="neutral"
-                  variant="outline"
-                >
-                  Idioma
-                </Button>
-              </div>
+              <Dropdown className="dropdown" triggerTitle="Idioma">
+                <Dropdown.Item>
+                  <button type="button">Inglês</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">Espanhol</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">Francês</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">Alemão</button>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <button type="button">Coreano</button>
+                </Dropdown.Item>
+              </Dropdown>
             </div>
 
             <Form ref={formRef} onSubmit={data => console.log(data)}>
