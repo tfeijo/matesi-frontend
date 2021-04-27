@@ -44,4 +44,7 @@ export default createGlobalStyle`
     list-style-type: none;
   }
 
+  button {
+    cursor: pointer;
+  }
 `;

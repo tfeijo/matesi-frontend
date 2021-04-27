@@ -127,7 +127,6 @@ export const CustomButton = styled.button<TProps>`
     background: transparent;
     border: 0.1rem solid transparent;
     font: var(--font-button);
-    cursor: pointer;
     transition: background 0.2s ease-in-out;
 
     padding: ${getPadding};
@@ -140,7 +139,9 @@ export const CustomButton = styled.button<TProps>`
       margin-left: ${iconOnly ? 'unset' : '0.8rem;'};
 
       ${iconOnly &&
-      css`
+    /* eslint-disable */
+    css`
+      /* eslint-enable */
         height: ${getIconSize({ size })};
         width: ${getIconSize({ size })};
       `};

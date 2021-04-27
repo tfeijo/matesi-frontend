@@ -141,15 +141,16 @@ export const Dropdown = styled.div<{ isOpen: boolean }>`
     display: flex;
     align-items: center;
     background-color: transparent;
-    cursor: pointer;
 
     svg {
       margin-left: 0.4rem;
       transition: transform 0.1s;
 
       ${({ isOpen }) =>
-        isOpen &&
-        css`
+    /* eslint-disable */
+    isOpen &&
+    css`
+        /* eslint-enable */
           transform: rotate(180deg);
         `};
     }
