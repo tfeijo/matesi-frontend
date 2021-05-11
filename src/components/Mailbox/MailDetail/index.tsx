@@ -1,21 +1,43 @@
-import { useContext } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 import { RiCloseLine, RiInboxArchiveLine } from 'react-icons/ri';
 import { MdChevronLeft } from 'react-icons/md';
 
+import { Form } from '@unform/web';
+import { FormHandles, SubmitHandler } from '@unform/core';
 import { MailboxContext } from '../../../context/MailboxContext';
 
 import Link from '../../Link';
 import Button from '../../Button';
 
 import { Container, BackButton, Main, Message, Actions } from './styles';
+import Checkbox from '../../Checkbox';
 
 const MailDetail: React.FC = ({ children }) => {
+  const formRef = useRef<FormHandles>(null);
+
   const {
     messages,
     selectedMessage,
     isMessageOpen,
     toggleMessage,
+    setActiveMessageState,
   } = useContext(MailboxContext);
+
+  const message = messages[selectedMessage];
+
+  const handleSubmit: SubmitHandler<{
+    contacted: boolean;
+  }> = useCallback(
+    data => {
+      // const formData = { id: message?.id, ...data };
+
+      setActiveMessageState({
+        ...message,
+        contacted: data.contacted,
+      });
+    },
+    [message, setActiveMessageState],
+  );
 
   return (
     <Container isOpen={isMessageOpen}>
@@ -28,25 +50,21 @@ const MailDetail: React.FC = ({ children }) => {
 
           <Main>
             <Message>
-              <h3>{messages[selectedMessage].subject}</h3>
+              <h3>{message.subject}</h3>
 
               <div className="about">
-                <h4>{messages[selectedMessage].name}</h4>
+                <h4>{message.name}</h4>
                 <span>
-                  {messages[selectedMessage].email} -{' '}
-                  {messages[selectedMessage].phone}
+                  {message.email} - {message.phone}
                 </span>
               </div>
 
-              {messages[selectedMessage].message && (
-                <p>messages[selectedMessage].message</p>
-              )}
+              {message.message && <p>message.message</p>}
 
-              {messages[selectedMessage].linkedin && (
+              {message.linkedin && (
                 <Link
                   color="secondary"
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  to={messages[selectedMessage].linkedin!}
+                  to={message.linkedin}
                   target="_blank"
                   rel="noreferrer noopener"
                 >
@@ -56,15 +74,20 @@ const MailDetail: React.FC = ({ children }) => {
             </Message>
 
             <Actions>
-              <label htmlFor="contacted">
-                <input
-                  type="checkbox"
-                  id="contacted"
+              <Form
+                ref={formRef}
+                onSubmit={handleSubmit}
+                initialData={{
+                  contacted: message.contacted,
+                }}
+              >
+                <Checkbox
+                  key={Math.random()}
+                  label="Contacted"
                   name="contacted"
-                  checked={messages[selectedMessage].contacted}
+                  onChange={() => formRef.current?.submitForm()}
                 />
-                Contato realizado
-              </label>
+              </Form>
 
               <div className="buttons">
                 <Button

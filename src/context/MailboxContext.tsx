@@ -19,6 +19,7 @@ type TProps = { messages: Array<TMessage> };
 
 type TMailboxContent = {
   messages: Array<TMessage>;
+  setActiveMessageState: (updatedMessage: TMessage) => void;
   selectedMessage: number;
   selectMessage: (index: number) => void;
   isMessageOpen: boolean;
@@ -27,8 +28,12 @@ type TMailboxContent = {
 
 const MailboxContext = createContext<TMailboxContent>({} as TMailboxContent);
 
-const MailboxProvider: React.FC<TProps> = ({ messages, children }) => {
+const MailboxProvider: React.FC<TProps> = ({
+  messages: initialMessages,
+  children,
+}) => {
   const [selectedMessage, setSelectedMessage] = useState(-1);
+  const [messages, setMessages] = useState(initialMessages);
   const [isMessageOpen, setIsMessageOpen] = useState(false);
 
   const selectMessage = (index: number) => {
@@ -40,10 +45,20 @@ const MailboxProvider: React.FC<TProps> = ({ messages, children }) => {
     setIsMessageOpen(!isMessageOpen);
   };
 
+  const setActiveMessageState = (updatedMessage: TMessage) => {
+    const updatedMessages = messages.map((message, index) => {
+      if (selectedMessage === index) return updatedMessage;
+      return message;
+    });
+
+    setMessages(updatedMessages);
+  };
+
   return (
     <MailboxContext.Provider
       value={{
         messages,
+        setActiveMessageState,
         selectedMessage,
         selectMessage,
         isMessageOpen,
