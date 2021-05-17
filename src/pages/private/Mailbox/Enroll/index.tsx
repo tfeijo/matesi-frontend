@@ -1,4 +1,6 @@
-import { useContext } from 'react';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+import { useContext, useRef } from 'react';
 import Button from '../../../../components/Button';
 import CourseCheckboxGroup from '../../../../components/CourseCheckboxGroup';
 
@@ -93,6 +95,7 @@ const MESSAGES = [
 ];
 
 const EnrollConfirmationForm: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const { messages, selectedMessage } = useContext(MailboxContext);
 
   if (selectedMessage < 0) return null;
@@ -104,9 +107,11 @@ const EnrollConfirmationForm: React.FC = () => {
       </h1>
       <p>Confirme os idiomas a matricular o aluno.</p>
 
-      <CourseCheckboxGroup />
+      <Form ref={formRef} onSubmit={data => console.log(data)}>
+        <CourseCheckboxGroup />
 
-      <Button>Efetuar matrícula</Button>
+        <Button type="submit">Efetuar matrícula</Button>
+      </Form>
     </ConfirmMessageContainer>
   );
 };

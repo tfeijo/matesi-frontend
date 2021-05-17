@@ -21,7 +21,7 @@ export const ConfirmMessageContainer = styled.div`
     margin: 2.4rem 0;
   }
 
-  > button {
+  form button {
     margin-top: 4rem;
     display: flex;
     margin-left: auto;

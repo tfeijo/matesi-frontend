@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
-import usaFlag from '../../assets/flags/usa-square.svg';
-import spainFlag from '../../assets/flags/spain-square.svg';
-import franceFlag from '../../assets/flags/france-square.svg';
-import koreaFlag from '../../assets/flags/korea-square.svg';
-import germanyFlag from '../../assets/flags/germany-square.svg';
-
+import { Scope } from '@unform/core';
 import Button from '../Button';
+import FlagCheckbox from './FlagCheckbox';
 
-import { Container, Slide, FlagCheckbox } from './styles';
+import { Container, Slide } from './styles';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useBreakpoints from '../../hooks/useBreakpoints';
 
@@ -84,47 +80,29 @@ export default function CourseCheckboxGroup() {
       )}
 
       <Slide numberOfSlides={numberOfSlides}>
-        <div className="slide-items-container" ref={slideItemsContainerRef}>
-          <div className="slide-item">
-            <FlagCheckbox>
-              <input type="checkbox" name="course" value="ingles" />
-              <img src={usaFlag} alt="Bandeira dos EUA" />
-              <p>Inglês</p>
-            </FlagCheckbox>
-          </div>
+        <Scope path="courses">
+          <div className="slide-items-container" ref={slideItemsContainerRef}>
+            <div className="slide-item">
+              <FlagCheckbox name="english" label="Inglês" course="english" />
+            </div>
 
-          <div className="slide-item">
-            <FlagCheckbox>
-              <input type="checkbox" name="course" value="espanhol" />
-              <img src={spainFlag} alt="Bandeira da Espanha" />
-              <p>Espanhol</p>
-            </FlagCheckbox>
-          </div>
+            <div className="slide-item">
+              <FlagCheckbox name="spanish" label="Espanhol" course="spanish" />
+            </div>
 
-          <div className="slide-item">
-            <FlagCheckbox>
-              <input type="checkbox" name="course" value="frances" />
-              <img src={franceFlag} alt="Bandeira da França" />
-              <p>Francês</p>
-            </FlagCheckbox>
-          </div>
+            <div className="slide-item">
+              <FlagCheckbox name="french" label="Francês" course="french" />
+            </div>
 
-          <div className="slide-item">
-            <FlagCheckbox>
-              <input type="checkbox" name="course" value="coreano" />
-              <img src={koreaFlag} alt="Bandeira da Coreia" />
-              <p>Coreano</p>
-            </FlagCheckbox>
-          </div>
+            <div className="slide-item">
+              <FlagCheckbox name="korean" label="Coreano" course="korean" />
+            </div>
 
-          <div className="slide-item">
-            <FlagCheckbox>
-              <input type="checkbox" name="course" value="alemao" />
-              <img src={germanyFlag} alt="Bandeira da Alemanha" />
-              <p>Alemão</p>
-            </FlagCheckbox>
+            <div className="slide-item">
+              <FlagCheckbox name="german" label="Alemão" course="german" />
+            </div>
           </div>
-        </div>
+        </Scope>
       </Slide>
 
       {isPhoneOnly && (
