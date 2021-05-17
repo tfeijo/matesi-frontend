@@ -14,7 +14,7 @@ function App() {
       <ScrollToTop />
       <Navbar />
       <Routes />
-      {/* <Footer /> */}
+      <Footer />
       <GlobalStyles />
     </BrowserRouter>
   );
