@@ -99,12 +99,7 @@ const MailList: React.FC = () => {
 
             <div className="extra-actions">
               {linkedin && (
-                <Link
-                  color="secondary"
-                  to={linkedin}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
+                <Link color="secondary" external href={linkedin}>
                   LinkedIn
                 </Link>
               )}

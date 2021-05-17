@@ -12,7 +12,7 @@ export type TMessage = {
   linkedin?: string;
   contacted: boolean;
   read: boolean;
-  courses: Array<TCourse>;
+  courses?: Array<TCourse>;
 };
 
 type TProps = { messages: Array<TMessage> };

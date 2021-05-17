@@ -62,12 +62,7 @@ const MailDetail: React.FC = ({ children }) => {
               {message.message && <p>message.message</p>}
 
               {message.linkedin && (
-                <Link
-                  color="secondary"
-                  to={message.linkedin}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
+                <Link color="secondary" external href={message.linkedin}>
                   LinkedIn
                 </Link>
               )}
