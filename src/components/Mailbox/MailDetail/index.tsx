@@ -59,7 +59,7 @@ const MailDetail: React.FC = ({ children }) => {
                 </span>
               </div>
 
-              {message.message && <p>message.message</p>}
+              {message.message && <p>{message.message}</p>}
 
               {message.linkedin && (
                 <Link color="secondary" external href={message.linkedin}>
