@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 export type TColor = 'primary' | 'secondary';
@@ -7,7 +6,7 @@ interface Props {
   color: TColor;
 }
 
-export const StyledLink = styled(Link)<Props>`
+export const StyledLink = styled.a<Props>`
   display: inline-flex;
   align-items: center;
 

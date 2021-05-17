@@ -15,8 +15,7 @@ import Contact from '../pages/public/Contact';
 import Login from '../pages/public/Login';
 import Enroll from '../pages/public/Enroll';
 
-import WorkingUsMailbox from '../pages/private/Mailbox/WorkingUs';
-import EnrollMailbox from '../pages/private/Mailbox/Enroll';
+import Mailbox from '../pages/private/Mailbox';
 
 import Students from '../pages/private/Students';
 
@@ -37,8 +36,7 @@ const Routes = () => (
     <Route path="/matricular" component={Enroll} />
     <Route path="/entrar" component={Login} />
 
-    <Route path="/mensagens/trabalhe-conosco" component={WorkingUsMailbox} />
-    <Route path="/mensagens/matriculas" component={EnrollMailbox} />
+    <Route path="/mensagens" component={Mailbox} />
 
     <Route path="/alunos" component={Students} />
 
