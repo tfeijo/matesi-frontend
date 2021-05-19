@@ -108,7 +108,7 @@ const EnrollConfirmationForm: React.FC = () => {
       <p>Confirme os idiomas a matricular o aluno.</p>
 
       <Form ref={formRef} onSubmit={data => console.log(data)}>
-        <CourseCheckboxGroup />
+        {/* <CourseCheckboxGroup /> */}
 
         <Button type="submit">Efetuar matrícula</Button>
       </Form>
