@@ -47,4 +47,16 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   }
+
+  .Toastify__toast {
+
+    &--success {
+      background: var(--color-success-default);
+    }
+
+    &--error {
+      background: var(--color-danger-default);
+    }
+
+  }
 `;
