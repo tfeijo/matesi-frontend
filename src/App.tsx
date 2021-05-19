@@ -1,11 +1,14 @@
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+
+import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
+
+import Routes from './routes';
 
 import GlobalStyles from './styles/global';
 
-import Navbar from './components/Navbar';
-
-import Routes from './routes';
-import ScrollToTop from './components/ScrollToTop';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 function App() {
   return (
@@ -14,6 +17,7 @@ function App() {
       <Navbar />
       <Routes />
       <GlobalStyles />
+      <ToastContainer />
     </BrowserRouter>
   );
 }
