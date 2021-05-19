@@ -98,7 +98,7 @@ const Enroll: React.FC = () => {
         abortEarly: false,
       });
 
-      api.post('registration', formData);
+      await api.post('registrations', formData);
 
       toast.success('Pré-matricula realizada com sucesso!');
 
