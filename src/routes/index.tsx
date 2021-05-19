@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 
 import Home from '../pages/public/Home';
 
@@ -16,8 +16,9 @@ import Login from '../pages/public/Login';
 import Enroll from '../pages/public/Enroll';
 
 import Mailbox from '../pages/private/Mailbox';
-
 import Students from '../pages/private/Students';
+
+import Route from './Route';
 
 const Routes = () => (
   <Switch>
@@ -36,9 +37,8 @@ const Routes = () => (
     <Route path="/matricular" component={Enroll} />
     <Route path="/entrar" component={Login} />
 
-    <Route path="/mensagens" component={Mailbox} />
-
-    <Route path="/alunos" component={Students} />
+    <Route path="/mensagens" component={Mailbox} isAdmin />
+    <Route path="/alunos" component={Students} isAdmin />
 
     <Route component={() => <Redirect to="/" />} />
   </Switch>
