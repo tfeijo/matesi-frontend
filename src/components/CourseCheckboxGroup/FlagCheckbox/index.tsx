@@ -13,6 +13,7 @@ interface Props {
   course: keyof typeof COURSE_FLAG;
   label: string;
   name: string;
+  value: string;
 }
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & Props;
@@ -35,7 +36,10 @@ function FlagCheckbox({ name, label, course, ...rest }: InputProps) {
     registerField({
       name: fieldName,
       ref: inputRef,
-      getValue: ref => ref.current.checked,
+      getValue: ref => {
+        if (ref.current.checked) return ref.current.value;
+        return '';
+      },
       clearValue: ref => {
         ref.current.checked = defaultValue;
       },

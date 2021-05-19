@@ -42,12 +42,19 @@ export const Container = styled.section`
     }
 
     .course-selection {
-      margin-bottom: 3.2rem;
+      margin-bottom: 2.4rem;
 
       h2 {
         font: var(--font-body);
         color: var(--color-label);
         text-align: center;
+      }
+
+      span.courses-error {
+        display: inline-block;
+        margin-top: 1.6rem;
+        font: var(--font-body-small);
+        color: var(--color-danger-default);
       }
     }
   }

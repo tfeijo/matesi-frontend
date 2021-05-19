@@ -9,7 +9,22 @@ import { Container, Slide } from './styles';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useBreakpoints from '../../hooks/useBreakpoints';
 
-export default function CourseCheckboxGroup() {
+interface Course {
+  id: string;
+  name: string;
+}
+
+type CourseWithInputName = Course & {
+  inputName: 'english' | 'spanish' | 'french' | 'korean' | 'german';
+};
+
+type CourseCheckboxGroupProps = {
+  courses: Course[];
+};
+
+export default function CourseCheckboxGroup({
+  courses,
+}: CourseCheckboxGroupProps) {
   const [isControlLeftDisabled, setIsControlLeftDisabled] = useState(true);
   const [isControlRightDisabled, setIsControlRightDisabled] = useState(false);
   const [numberOfSlides, setNumberOfSlides] = useState(1);
@@ -19,6 +34,15 @@ export default function CourseCheckboxGroup() {
   const { isPhoneOnly } = useBreakpoints();
 
   const slideItemsContainerRef = useRef<HTMLDivElement>(null);
+
+  const coursesWithInputName: CourseWithInputName[] = courses.map(course => {
+    if (course.name === 'Inglês') return { ...course, inputName: 'english' };
+    if (course.name === 'Espanhol') return { ...course, inputName: 'spanish' };
+    if (course.name === 'Francês') return { ...course, inputName: 'french' };
+    if (course.name === 'Coreano') return { ...course, inputName: 'korean' };
+    if (course.name === 'Alemão') return { ...course, inputName: 'german' };
+    return { ...course, inputName: 'english' };
+  });
 
   useEffect(() => {
     if (isMaxWidth350) setNumberOfSlides(1);
@@ -65,6 +89,8 @@ export default function CourseCheckboxGroup() {
     }
   }
 
+  if (!courses) return null;
+
   return (
     <Container>
       {isPhoneOnly && (
@@ -82,25 +108,16 @@ export default function CourseCheckboxGroup() {
       <Slide numberOfSlides={numberOfSlides}>
         <Scope path="courses">
           <div className="slide-items-container" ref={slideItemsContainerRef}>
-            <div className="slide-item">
-              <FlagCheckbox name="english" label="Inglês" course="english" />
-            </div>
-
-            <div className="slide-item">
-              <FlagCheckbox name="spanish" label="Espanhol" course="spanish" />
-            </div>
-
-            <div className="slide-item">
-              <FlagCheckbox name="french" label="Francês" course="french" />
-            </div>
-
-            <div className="slide-item">
-              <FlagCheckbox name="korean" label="Coreano" course="korean" />
-            </div>
-
-            <div className="slide-item">
-              <FlagCheckbox name="german" label="Alemão" course="german" />
-            </div>
+            {coursesWithInputName.map(course => (
+              <div className="slide-item" key={course.id}>
+                <FlagCheckbox
+                  name={course.inputName}
+                  label={course.name}
+                  course={course.inputName}
+                  value={course.id}
+                />
+              </div>
+            ))}
           </div>
         </Scope>
       </Slide>
