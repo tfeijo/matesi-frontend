@@ -7,9 +7,11 @@ import { toast } from 'react-toastify';
 import Button from '../../../components/Button';
 import CourseCheckboxGroup from '../../../components/CourseCheckboxGroup';
 import Input from '../../../components/Input';
-import { Container } from './styles';
-import api from '../../../services/api';
 import Loader from '../../../components/Loader';
+import api from '../../../services/api';
+
+import { Container, FailedLoadingResource } from './styles';
+import ScrollToTop from '../../../components/ScrollToTop';
 
 interface FormCourses {
   english: string;
@@ -35,10 +37,13 @@ type TKey = keyof FormCourses;
 
 const Enroll: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [coursesError, setCoursesError] = useState('');
 
   useEffect(() => {
+    setIsLoading(true);
+
     async function loadCourses() {
       try {
         const { data } = await api.get('courses');
@@ -50,6 +55,8 @@ const Enroll: React.FC = () => {
     }
 
     loadCourses();
+
+    setIsLoading(false);
   }, []);
 
   const handleSubmit: SubmitHandler<IFormData> = useCallback(async data => {
@@ -116,10 +123,21 @@ const Enroll: React.FC = () => {
     }
   }, []);
 
-  if (!courses) return <Loader size={48} style={{ height: '50vh' }} />;
+  if (isLoading) return <Loader size={48} style={{ height: '50vh' }} />;
+
+  if (!courses)
+    return (
+      <FailedLoadingResource>
+        <h1>
+          Não foi possível carregar os recursos necessários. Por favor, tente
+          novamente.
+        </h1>
+      </FailedLoadingResource>
+    );
 
   return (
     <Container>
+      <ScrollToTop />
       <h1>Venha estudar conosco</h1>
 
       <p>

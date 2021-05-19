@@ -64,3 +64,16 @@ export const Container = styled.section`
     max-width: 56rem;
   }
 `;
+
+export const FailedLoadingResource = styled.section`
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  padding: 0 1.6rem;
+
+  h1 {
+    max-width: 40rem;
+    text-align: center;
+    font: var(--font-heading-small);
+  }
+`;
