@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 import api from '../services/api';
 
-type TCourse = { id: number; name: string };
+type TCourse = { id: string; name: string };
 
 type BoxName = 'registrations' | 'questions' | 'work_with_us';
 

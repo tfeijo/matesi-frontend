@@ -1,22 +1,15 @@
-import { FormHandles } from '@unform/core';
-import { Form } from '@unform/web';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import Button from '../../../../components/Button';
-import CourseCheckboxGroup from '../../../../components/CourseCheckboxGroup';
-import Loader from '../../../../components/Loader';
 
+import Loader from '../../../../components/Loader';
 import MailDetail from '../../../../components/Mailbox/MailDetail';
 import MailList from '../../../../components/Mailbox/MailList';
-import {
-  MailboxContext,
-  MailboxProvider,
-} from '../../../../context/MailboxContext';
+import { MailboxProvider } from '../../../../context/MailboxContext';
+import { ConfirmationForm } from './ConfirmationForm';
+
 import api from '../../../../services/api';
 
-import { ConfirmMessageContainer } from './styles';
-
-type TCourse = { id: number; name: string };
+type TCourse = { id: string; name: string };
 
 interface Message {
   id: string;
@@ -34,30 +27,9 @@ type MessageResponse = Omit<Message, 'read' | 'contacted' | 'subject'> & {
   isContact: boolean;
 };
 
-const EnrollConfirmationForm: React.FC = () => {
-  const formRef = useRef<FormHandles>(null);
-  const { messages, selectedMessage } = useContext(MailboxContext);
-
-  if (selectedMessage < 0) return null;
-
-  return (
-    <ConfirmMessageContainer>
-      <h1>
-        Matricular <span>{messages[selectedMessage].name}</span>
-      </h1>
-      <p>Confirme os idiomas a matricular o aluno.</p>
-
-      <Form ref={formRef} onSubmit={data => console.log(data)}>
-        {/* <CourseCheckboxGroup /> */}
-
-        <Button type="submit">Efetuar matrícula</Button>
-      </Form>
-    </ConfirmMessageContainer>
-  );
-};
-
 const EnrollMailbox: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [allCourses, setAllCourses] = useState<TCourse[]>([]);
 
   useEffect(() => {
     async function loadMessages() {
@@ -83,8 +55,14 @@ const EnrollMailbox: React.FC = () => {
       setMessages(formattedData);
     }
 
+    async function loadCourses() {
+      const { data } = await api.get('courses');
+      setAllCourses(data);
+    }
+
     try {
       loadMessages();
+      loadCourses();
     } catch (error) {
       toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
     }
@@ -97,7 +75,9 @@ const EnrollMailbox: React.FC = () => {
       <div>
         <MailList />
         <MailDetail>
-          <EnrollConfirmationForm />
+          {allCourses.length > 0 && (
+            <ConfirmationForm allCourses={allCourses} />
+          )}
         </MailDetail>
       </div>
     </MailboxProvider>
