@@ -48,7 +48,7 @@ const Questions: React.FC = () => {
   if (messages.length === 0) return <Loader size={48} />;
 
   return (
-    <MailboxProvider messages={messages}>
+    <MailboxProvider messages={messages} boxName="questions">
       <div>
         <MailList />
         <MailDetail />

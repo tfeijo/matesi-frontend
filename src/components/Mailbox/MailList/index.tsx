@@ -18,15 +18,18 @@ const MailList: React.FC = () => {
     selectedMessage,
     selectMessage,
     toggleMessage,
+    setMessageAsRead,
   } = useContext(MailboxContext);
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
 
   const { isTabletLandscapeUp } = useBreakpoints();
 
-  const showMessage = (index: number) => {
+  const handleClickMessage = (index: number) => {
     selectMessage(index);
     if (!isTabletLandscapeUp) toggleMessage(true);
+
+    setMessageAsRead(index);
   };
 
   const toggleSearch = () => {
@@ -91,7 +94,7 @@ const MailList: React.FC = () => {
               <button
                 type="button"
                 aria-label="Ver mensagem"
-                onClick={() => showMessage(index)}
+                onClick={() => handleClickMessage(index)}
               >
                 Ver mensagem
               </button>

@@ -1,6 +1,9 @@
 import { createContext, useState } from 'react';
+import api from '../services/api';
 
 type TCourse = { id: number; name: string };
+
+type BoxName = 'registrations' | 'questions' | 'work_with_us';
 
 export type TMessage = {
   id: string;
@@ -15,21 +18,24 @@ export type TMessage = {
   courses?: Array<TCourse>;
 };
 
-type TProps = { messages: Array<TMessage> };
+type TProps = { messages: Array<TMessage>; boxName?: BoxName };
 
 type TMailboxContent = {
   messages: Array<TMessage>;
+  boxName?: BoxName;
   setActiveMessageState: (updatedMessage: TMessage) => void;
   selectedMessage: number;
   selectMessage: (index: number) => void;
   isMessageOpen: boolean;
   toggleMessage: (open?: boolean) => void;
+  setMessageAsRead: (index: number) => Promise<void>;
 };
 
 const MailboxContext = createContext<TMailboxContent>({} as TMailboxContent);
 
 const MailboxProvider: React.FC<TProps> = ({
   messages: initialMessages,
+  boxName,
   children,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(-1);
@@ -54,15 +60,41 @@ const MailboxProvider: React.FC<TProps> = ({
     setMessages(updatedMessages);
   };
 
+  const setMessageAsRead = async (messageToRead: number) => {
+    try {
+      const { id, read } = messages[messageToRead];
+
+      if (!boxName) return;
+      if (read) return;
+
+      await api.put(`${boxName}/read/${id}`);
+
+      const updatedMessages = messages.map((message, index) => {
+        if (messageToRead === index)
+          return {
+            ...message,
+            read: true,
+          };
+        return message;
+      });
+
+      setMessages(updatedMessages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <MailboxContext.Provider
       value={{
         messages,
+        boxName,
         setActiveMessageState,
         selectedMessage,
         selectMessage,
         isMessageOpen,
         toggleMessage,
+        setMessageAsRead,
       }}
     >
       {children}
