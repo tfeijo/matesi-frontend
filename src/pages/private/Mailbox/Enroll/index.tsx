@@ -1,8 +1,10 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import { useContext, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 import Button from '../../../../components/Button';
 import CourseCheckboxGroup from '../../../../components/CourseCheckboxGroup';
+import Loader from '../../../../components/Loader';
 
 import MailDetail from '../../../../components/Mailbox/MailDetail';
 import MailList from '../../../../components/Mailbox/MailList';
@@ -10,89 +12,27 @@ import {
   MailboxContext,
   MailboxProvider,
 } from '../../../../context/MailboxContext';
+import api from '../../../../services/api';
 
 import { ConfirmMessageContainer } from './styles';
 
-const MESSAGES = [
-  {
-    id: '1',
-    name: 'Nome da pessoa',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Pré-matriculo para os cursos: inglês e francês.',
-    message: '',
-    linkedin: '',
-    contacted: false,
-    read: false,
-    courses: [{ id: 1, name: 'german' }],
-  },
-  {
-    id: '2',
-    name: 'Nome da pessoa 2',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Pré-matriculo para os cursos: inglês e francês.',
-    message: '',
-    linkedin: '',
-    contacted: false,
-    read: false,
-    courses: [
-      { id: 1, name: 'english' },
-      { id: 2, name: 'spanish' },
-    ],
-  },
-  {
-    id: '3',
-    name: 'Nome da pessoa 3',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Pré-matriculo para os cursos: inglês e francês.',
-    message: '',
-    linkedin: '',
-    contacted: true,
-    read: true,
-    courses: [
-      { id: 1, name: 'french' },
-      { id: 2, name: 'spanish' },
-      { id: 3, name: 'korean' },
-    ],
-  },
-  {
-    id: '4',
-    name: 'Nome da pessoa 4',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Pré-matriculo para os cursos: inglês e francês.',
-    message: '',
-    linkedin: '',
-    contacted: false,
-    read: false,
-    courses: [
-      { id: 1, name: 'english' },
-      { id: 2, name: 'korean' },
-      { id: 3, name: 'german' },
-      { id: 4, name: 'french' },
-    ],
-  },
-  {
-    id: '5',
-    name: 'Nome da pessoa 5',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Pré-matriculo para os cursos: inglês e francês.',
-    message: '',
-    linkedin: '',
-    contacted: false,
-    read: true,
-    courses: [
-      { id: 1, name: 'korean' },
-      { id: 2, name: 'spanish' },
-      { id: 3, name: 'german' },
-      { id: 4, name: 'english' },
-      { id: 5, name: 'french' },
-    ],
-  },
-];
+type TCourse = { id: number; name: string };
+
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  read: boolean;
+  contacted: boolean;
+  courses: Array<TCourse>;
+}
+
+type MessageResponse = Omit<Message, 'read' | 'contacted' | 'subject'> & {
+  isRead: boolean;
+  isContact: boolean;
+};
 
 const EnrollConfirmationForm: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
@@ -117,8 +57,43 @@ const EnrollConfirmationForm: React.FC = () => {
 };
 
 const EnrollMailbox: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    async function loadMessages() {
+      const { data } = await api.get<MessageResponse[]>('registrations');
+
+      const formattedData = data.map(
+        ({ isContact, isRead, courses, ...rest }) => {
+          const coursesRegistered = courses
+            .map(course => course.name)
+            .join(', ')
+            .trimEnd();
+
+          return {
+            read: isRead,
+            contacted: isContact,
+            subject: `Pré-matricula para o(s) curso(s): ${coursesRegistered}.`,
+            courses,
+            ...rest,
+          };
+        },
+      );
+
+      setMessages(formattedData);
+    }
+
+    try {
+      loadMessages();
+    } catch (error) {
+      toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
+    }
+  }, []);
+
+  if (messages.length === 0) return <Loader />;
+
   return (
-    <MailboxProvider messages={MESSAGES}>
+    <MailboxProvider messages={messages} boxName="registrations">
       <div>
         <MailList />
         <MailDetail>
