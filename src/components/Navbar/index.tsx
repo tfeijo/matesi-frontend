@@ -112,6 +112,9 @@ const Navbar: React.FC = () => {
               <NavLink to="/contato">Contato</NavLink>
             </li>
             <li>
+              <NavLink to="/mensagens/matricular">Mailbox</NavLink>
+            </li>
+            <li>
               <Button asLink to="/matricular" className="enroll-button">
                 Matricule-se
               </Button>
