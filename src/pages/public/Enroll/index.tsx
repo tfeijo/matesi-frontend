@@ -37,13 +37,10 @@ type TKey = keyof FormCourses;
 
 const Enroll: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [coursesError, setCoursesError] = useState('');
 
   useEffect(() => {
-    setIsLoading(true);
-
     async function loadCourses() {
       try {
         const { data } = await api.get('courses');
@@ -51,12 +48,11 @@ const Enroll: React.FC = () => {
         setCourses(data);
       } catch (error) {
         console.log(error);
+        setCourses([]);
       }
     }
 
     loadCourses();
-
-    setIsLoading(false);
   }, []);
 
   const handleSubmit: SubmitHandler<IFormData> = useCallback(async data => {
@@ -123,45 +119,45 @@ const Enroll: React.FC = () => {
     }
   }, []);
 
-  if (isLoading) return <Loader size={48} style={{ height: '50vh' }} />;
-
-  if (!courses)
-    return (
-      <FailedLoadingResource>
-        <h1>
-          Não foi possível carregar os recursos necessários. Por favor, tente
-          novamente.
-        </h1>
-      </FailedLoadingResource>
-    );
+  if (courses === null) return <Loader size={48} style={{ height: '50vh' }} />;
 
   return (
-    <Container>
-      <ScrollToTop />
-      <h1>Venha estudar conosco</h1>
+    <>
+      {courses.length === 0 ? (
+        <FailedLoadingResource>
+          <h1>
+            Não foi possível carregar os recursos necessários. Por favor, tente
+            novamente.
+          </h1>
+        </FailedLoadingResource>
+      ) : (
+        <Container>
+          <h1>Venha estudar conosco</h1>
 
-      <p>
-        Faça sua pré-matrícula para os cursos de seu interesse e aguarde o nosso
-        contato para confirmação
-      </p>
+          <p>
+            Faça sua pré-matrícula para os cursos de seu interesse e aguarde o
+            nosso contato para confirmação
+          </p>
 
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        <div className="course-selection">
-          <h2>Clique no(s) idioma(s) que deseja cursar</h2>
-          {courses && <CourseCheckboxGroup courses={courses} />}
-          {coursesError && (
-            <span className="courses-error">{coursesError}</span>
-          )}
-        </div>
-        <Input label="Nome" name="name" />
-        <Input type="email" label="E-mail" name="email" />
-        <Input label="Telefone" name="phone" />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <div className="course-selection">
+              <h2>Clique no(s) idioma(s) que deseja cursar</h2>
+              {courses && <CourseCheckboxGroup courses={courses} />}
+              {coursesError && (
+                <span className="courses-error">{coursesError}</span>
+              )}
+            </div>
+            <Input label="Nome" name="name" />
+            <Input type="email" label="E-mail" name="email" />
+            <Input label="Telefone" name="phone" />
 
-        <Button block type="submit">
-          Concluir pré-matrícula
-        </Button>
-      </Form>
-    </Container>
+            <Button block type="submit">
+              Concluir pré-matrícula
+            </Button>
+          </Form>
+        </Container>
+      )}
+    </>
   );
 };
 
