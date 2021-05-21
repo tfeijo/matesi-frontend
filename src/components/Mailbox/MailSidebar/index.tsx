@@ -1,6 +1,4 @@
-/* eslint-disable react/no-array-index-key */
 import { useEffect, useState } from 'react';
-import { IconType } from 'react-icons';
 import { NavLink, useLocation, useRouteMatch } from 'react-router-dom';
 import {
   RiAccountBoxLine,
@@ -12,77 +10,60 @@ import {
 import { MdViewList, MdChevronLeft } from 'react-icons/md';
 
 import { Container, MenuToggler, NavMenu, Badge } from './styles';
+import api from '../../../services/api';
 
-type TMenuItems = {
-  to: string;
-  Icon: IconType;
-  title: string;
-  qtdNotRead?: number;
+type UnreadValues = {
+  enroll: number;
+  question: number;
+  workingUs: number;
 };
-
-type TActiveTab = Pick<TMenuItems, 'title' | 'qtdNotRead'>;
-
-const MENU_ITEMS: Array<TMenuItems> = [
-  {
-    to: '/matriculas',
-    Icon: RiAccountBoxLine,
-    title: 'Pré-matricula',
-    qtdNotRead: 150,
-  },
-  {
-    to: '/fale-conosco',
-    Icon: RiQuestionLine,
-    title: 'Fale conosco',
-    qtdNotRead: 10,
-  },
-  {
-    to: '/trabalhe-conosco',
-    Icon: RiSuitcaseLine,
-    title: 'Trabalhe conosco',
-    qtdNotRead: 5,
-  },
-  {
-    to: '/arquivados',
-    Icon: RiInboxArchiveLine,
-    title: 'Arquivados',
-  },
-  {
-    to: '/excluidos',
-    Icon: RiCloseLine,
-    title: 'Excluídos',
-  },
-];
 
 const MailSidebar: React.FC = () => {
   const { path } = useRouteMatch();
   const { pathname } = useLocation();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<TActiveTab>(MENU_ITEMS[0]);
+  const [activeTab, setActiveTab] = useState('Pré-matricula');
+
+  const [unreadValues, setUnreadValues] = useState<UnreadValues | null>(null);
 
   useEffect(() => {
     setIsMenuOpen(false);
 
-    const newActiveTab = MENU_ITEMS.find(
-      item => pathname === path + item.to && item,
+    const newActiveTab = document.querySelector<HTMLAnchorElement>(
+      'aside nav [aria-current]',
     );
 
-    if (newActiveTab) setActiveTab(newActiveTab);
-  }, [pathname, path]);
+    if (newActiveTab) setActiveTab(newActiveTab.text);
 
-  const showBadge = (qtdNotRead?: number) =>
-    qtdNotRead && qtdNotRead >= 100 ? (
-      <Badge>99+</Badge>
-    ) : (
-      <Badge>{qtdNotRead}</Badge>
-    );
+    async function loadUnread() {
+      const { data: enroll } = await api.get('registrations/unread');
+      const { data: question } = await api.get('questions/unread');
+      const { data: workingUs } = await api.get('work_with_us/unread');
+
+      setUnreadValues({
+        enroll,
+        question,
+        workingUs,
+      });
+    }
+
+    try {
+      loadUnread();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [pathname]);
+
+  const showBadge = (qtdNotRead: number) =>
+    qtdNotRead >= 100 ? <Badge>99+</Badge> : <Badge>{qtdNotRead}</Badge>;
 
   return (
     <Container>
       <MenuToggler onClick={() => setIsMenuOpen(true)}>
         <span className="right-content">
           <MdViewList size={24} />
-          {activeTab.title}
+          {activeTab}
         </span>
       </MenuToggler>
 
@@ -97,18 +78,56 @@ const MailSidebar: React.FC = () => {
             </MenuToggler>
           </li>
 
-          {MENU_ITEMS.map(({ to, Icon, title, qtdNotRead }, index) => (
-            <li key={index}>
-              <NavLink to={`${path}${to}`}>
-                <span className="right-content">
-                  <Icon size={24} />
-                  {title}
-                </span>
+          <li>
+            <NavLink to={`${path}/matriculas`}>
+              <span className="right-content">
+                <RiAccountBoxLine size={24} />
+                Pré-matricula
+              </span>
 
-                {showBadge(qtdNotRead)}
-              </NavLink>
-            </li>
-          ))}
+              {unreadValues?.enroll ? showBadge(unreadValues.enroll) : ''}
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to={`${path}/fale-conosco`}>
+              <span className="right-content">
+                <RiQuestionLine size={24} />
+                Fale conosco
+              </span>
+
+              {unreadValues?.question ? showBadge(unreadValues.question) : ''}
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to={`${path}/trabalhe-conosco`}>
+              <span className="right-content">
+                <RiSuitcaseLine size={24} />
+                Trabalhe conosco
+              </span>
+
+              {unreadValues?.workingUs ? showBadge(unreadValues.workingUs) : ''}
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to={`${path}/arquivados`}>
+              <span className="right-content">
+                <RiInboxArchiveLine size={24} />
+                Arquivados
+              </span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to={`${path}/excluidos`}>
+              <span className="right-content">
+                <RiCloseLine size={24} />
+                Excluídos
+              </span>
+            </NavLink>
+          </li>
         </ul>
       </NavMenu>
     </Container>
