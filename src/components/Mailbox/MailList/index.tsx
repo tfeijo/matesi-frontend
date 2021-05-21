@@ -20,6 +20,7 @@ const MailList: React.FC = () => {
     toggleMessage,
     setMessageAsRead,
     toggleMessageAsArchived,
+    toggleMessageAsDeleted,
   } = useContext(MailboxContext);
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -123,6 +124,7 @@ const MailList: React.FC = () => {
                   color="danger"
                   variant="outline"
                   size="small"
+                  onClick={() => toggleMessageAsDeleted(id, index)}
                 />
               </div>
             </div>

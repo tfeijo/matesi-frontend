@@ -22,6 +22,7 @@ const MailDetail: React.FC = ({ children }) => {
     toggleMessage,
     toggleMessageAsContacted,
     toggleMessageAsArchived,
+    toggleMessageAsDeleted,
   } = useContext(MailboxContext);
 
   const message = messages[selectedMessage];
@@ -32,6 +33,10 @@ const MailDetail: React.FC = ({ children }) => {
 
   function handleArchiveMessage() {
     toggleMessageAsArchived(message.id, selectedMessage);
+  }
+
+  function handleDeleteMessage() {
+    toggleMessageAsDeleted(message.id, selectedMessage);
   }
 
   return (
@@ -94,6 +99,7 @@ const MailDetail: React.FC = ({ children }) => {
                   color="danger"
                   variant="outline"
                   size="small"
+                  onClick={handleDeleteMessage}
                 >
                   Excluir
                 </Button>
