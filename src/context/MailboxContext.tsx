@@ -29,6 +29,7 @@ type TMailboxContent = {
   isMessageOpen: boolean;
   toggleMessage: (open?: boolean) => void;
   setMessageAsRead: (index: number) => Promise<void>;
+  toggleMessageAsContacted: (contacted: boolean) => Promise<void>;
 };
 
 const MailboxContext = createContext<TMailboxContent>({} as TMailboxContent);
@@ -84,6 +85,22 @@ const MailboxProvider: React.FC<TProps> = ({
     }
   };
 
+  const toggleMessageAsContacted = async (contacted: boolean) => {
+    try {
+      if (!boxName) return;
+
+      const { id } = messages[selectedMessage];
+      await api.put(`${boxName}/contact/${id}`);
+
+      setActiveMessageState({
+        ...messages[selectedMessage],
+        contacted,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <MailboxContext.Provider
       value={{
@@ -95,6 +112,7 @@ const MailboxProvider: React.FC<TProps> = ({
         isMessageOpen,
         toggleMessage,
         setMessageAsRead,
+        toggleMessageAsContacted,
       }}
     >
       {children}

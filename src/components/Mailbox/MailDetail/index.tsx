@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { RiCloseLine, RiInboxArchiveLine } from 'react-icons/ri';
 import { MdChevronLeft } from 'react-icons/md';
 
@@ -20,24 +20,14 @@ const MailDetail: React.FC = ({ children }) => {
     selectedMessage,
     isMessageOpen,
     toggleMessage,
-    setActiveMessageState,
+    toggleMessageAsContacted,
   } = useContext(MailboxContext);
 
   const message = messages[selectedMessage];
 
-  const handleSubmit: SubmitHandler<{
-    contacted: boolean;
-  }> = useCallback(
-    data => {
-      // const formData = { id: message?.id, ...data };
-
-      setActiveMessageState({
-        ...message,
-        contacted: data.contacted,
-      });
-    },
-    [message, setActiveMessageState],
-  );
+  const handleSubmit: SubmitHandler<{ contacted: boolean }> = data => {
+    toggleMessageAsContacted(data.contacted);
+  };
 
   return (
     <Container isOpen={isMessageOpen}>
