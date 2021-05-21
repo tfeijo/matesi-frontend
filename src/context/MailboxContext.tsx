@@ -3,7 +3,12 @@ import api from '../services/api';
 
 type TCourse = { id: string; name: string };
 
-type BoxName = 'registrations' | 'questions' | 'work_with_us';
+type BoxName =
+  | 'registrations'
+  | 'questions'
+  | 'work_with_us'
+  | 'archives'
+  | 'deletes';
 
 export type TMessage = {
   id: string;
@@ -16,6 +21,7 @@ export type TMessage = {
   contacted: boolean;
   read: boolean;
   courses?: Array<TCourse>;
+  originBox?: 'registrations' | 'questions' | 'work_with_us';
 };
 
 type TProps = { messages: Array<TMessage>; boxName?: BoxName };
@@ -106,8 +112,9 @@ const MailboxProvider: React.FC<TProps> = ({
   const toggleMessageAsArchived = async (id: string, indexToDelete: number) => {
     try {
       if (!boxName) return;
+      const { originBox } = messages[indexToDelete];
 
-      await api.put(`${boxName}/archive/${id}`);
+      await api.put(`${originBox || boxName}/archive/${id}`);
 
       const updatedMessages = messages.filter(message => message.id !== id);
 
@@ -124,8 +131,9 @@ const MailboxProvider: React.FC<TProps> = ({
   const toggleMessageAsDeleted = async (id: string, indexToDelete: number) => {
     try {
       if (!boxName) return;
+      const { originBox } = messages[indexToDelete];
 
-      await api.put(`${boxName}/soft_delete/${id}`);
+      await api.put(`${originBox || boxName}/soft_delete/${id}`);
 
       const updatedMessages = messages.filter(message => message.id !== id);
 

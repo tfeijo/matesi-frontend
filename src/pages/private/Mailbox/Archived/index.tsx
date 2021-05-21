@@ -51,6 +51,7 @@ const Archived: React.FC = () => {
             return {
               subject: `Pré-matricula para o(s) curso(s): ${coursesRegistered}.`,
               courses,
+              originBox: 'registrations',
               ...sharedData,
             };
           }
@@ -58,6 +59,7 @@ const Archived: React.FC = () => {
           return {
             ...sharedData,
             message: about_me || message,
+            originBox: about_me ? 'work_with_us' : 'questions',
           };
         },
       );
@@ -75,7 +77,7 @@ const Archived: React.FC = () => {
   if (messages.length === 0) return <Loader size={48} />;
 
   return (
-    <MailboxProvider messages={messages}>
+    <MailboxProvider messages={messages} boxName="archives">
       <div>
         <MailList />
         <MailDetail />

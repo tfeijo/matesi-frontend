@@ -1,7 +1,11 @@
 import { useContext, useRef, useState } from 'react';
 import { FormHandles } from '@unform/core';
-import { MdChevronLeft, MdSearch } from 'react-icons/md';
-import { RiCloseLine, RiInboxArchiveLine } from 'react-icons/ri';
+import { MdChevronLeft, MdSearch, MdUndo } from 'react-icons/md';
+import {
+  RiCloseLine,
+  RiInboxArchiveLine,
+  RiInboxUnarchiveLine,
+} from 'react-icons/ri';
 
 import { MailboxContext } from '../../../context/MailboxContext';
 
@@ -16,6 +20,7 @@ const MailList: React.FC = () => {
   const {
     messages,
     selectedMessage,
+    boxName,
     selectMessage,
     toggleMessage,
     setMessageAsRead,
@@ -40,6 +45,11 @@ const MailList: React.FC = () => {
       document.activeElement.blur();
     }
   };
+
+  const ArchiveIcon =
+    boxName === 'archives' ? RiInboxUnarchiveLine : RiInboxArchiveLine;
+
+  const DeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
 
   return (
     <Container>
@@ -112,7 +122,7 @@ const MailList: React.FC = () => {
               <div className="extra-actions__buttons">
                 <Button
                   iconOnly
-                  icon={RiInboxArchiveLine}
+                  icon={ArchiveIcon}
                   color="secondary"
                   variant="outline"
                   size="small"
@@ -120,7 +130,7 @@ const MailList: React.FC = () => {
                 />
                 <Button
                   iconOnly
-                  icon={RiCloseLine}
+                  icon={DeleteIcon}
                   color="danger"
                   variant="outline"
                   size="small"
