@@ -68,7 +68,7 @@ const EnrollMailbox: React.FC = () => {
     }
   }, []);
 
-  if (messages.length === 0) return <Loader />;
+  if (messages.length === 0) return <Loader size={48} />;
 
   return (
     <MailboxProvider messages={messages} boxName="registrations">

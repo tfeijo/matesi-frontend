@@ -1,73 +1,81 @@
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import Loader from '../../../../components/Loader';
 import MailDetail from '../../../../components/Mailbox/MailDetail';
 import MailList from '../../../../components/Mailbox/MailList';
 import { MailboxProvider } from '../../../../context/MailboxContext';
+import api from '../../../../services/api';
 
-const MESSAGES = [
-  {
-    id: '1',
-    name: 'Pessoa',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Qual a sua dúvida',
-    message:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur error reiciendis ut quis repudiandae eaque quaerat? Accusantium fugiat laboriosam blanditiis.',
-    linkedin: '',
-    contacted: false,
-    read: false,
-  },
-  {
-    id: '2',
-    name: 'Pessoa 2',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Qual a sua dúvida',
-    message:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur error reiciendis ut quis repudiandae eaque quaerat? Accusantium fugiat laboriosam blanditiis.',
-    linkedin: '',
-    contacted: false,
-    read: false,
-  },
-  {
-    id: '3',
-    name: 'Pessoa 3',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Qual a sua dúvida',
-    message:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur error reiciendis ut quis repudiandae eaque quaerat? Accusantium fugiat laboriosam blanditiis.',
-    linkedin: '',
-    contacted: true,
-    read: true,
-  },
-  {
-    id: '4',
-    name: 'Pessoa 4',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Qual a sua dúvida',
-    message:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur error reiciendis ut quis repudiandae eaque quaerat? Accusantium fugiat laboriosam blanditiis.',
-    linkedin: '',
-    contacted: false,
-    read: false,
-  },
-  {
-    id: '5',
-    name: 'Pessoa 5',
-    email: 'email@email.com',
-    phone: '24988776655',
-    subject: 'Qual a sua dúvida',
-    message:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur error reiciendis ut quis repudiandae eaque quaerat? Accusantium fugiat laboriosam blanditiis.',
-    linkedin: '',
-    contacted: false,
-    read: true,
-  },
-];
+type TCourse = { id: string; name: string };
+
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  subject?: string;
+  linkedin?: string;
+  message?: string;
+  read: boolean;
+  contacted: boolean;
+  courses?: Array<TCourse>;
+}
+
+type MessageResponse = Omit<Message, 'read' | 'contacted'> & {
+  isRead: boolean;
+  isContact: boolean;
+  about_me?: string;
+};
 
 const Deleted: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    async function loadMessages() {
+      const { data } = await api.get<MessageResponse[]>('deletes');
+
+      const formattedData = data.map(
+        ({ isContact, isRead, courses, about_me, message, ...rest }) => {
+          const sharedData = {
+            read: isRead,
+            contacted: isContact,
+            ...rest,
+          };
+
+          if (courses) {
+            const coursesRegistered = courses
+              .map(course => course.name)
+              .join(', ')
+              .trimEnd();
+
+            return {
+              subject: `Pré-matricula para o(s) curso(s): ${coursesRegistered}.`,
+              courses,
+              ...sharedData,
+            };
+          }
+
+          return {
+            ...sharedData,
+            message: about_me || message,
+          };
+        },
+      );
+
+      setMessages(formattedData);
+    }
+
+    try {
+      loadMessages();
+    } catch (error) {
+      toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
+    }
+  }, []);
+
+  if (messages.length === 0) return <Loader size={48} />;
+
   return (
-    <MailboxProvider messages={MESSAGES}>
+    <MailboxProvider messages={messages}>
       <div>
         <MailList />
         <MailDetail />
