@@ -28,7 +28,7 @@ type MessageResponse = Omit<Message, 'read' | 'contacted' | 'subject'> & {
 };
 
 const EnrollMailbox: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[] | null>(null);
   const [allCourses, setAllCourses] = useState<TCourse[]>([]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const EnrollMailbox: React.FC = () => {
     }
   }, []);
 
-  if (messages.length === 0) return <Loader size={48} />;
+  if (messages === null) return <Loader size={48} />;
 
   return (
     <MailboxProvider messages={messages} boxName="registrations">

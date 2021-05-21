@@ -23,7 +23,7 @@ type MessageResponse = Omit<Message, 'read' | 'contacted'> & {
 };
 
 const Questions: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[] | null>(null);
 
   useEffect(() => {
     async function loadMessages() {
@@ -45,7 +45,7 @@ const Questions: React.FC = () => {
     }
   }, []);
 
-  if (messages.length === 0) return <Loader size={48} />;
+  if (messages === null) return <Loader size={48} />;
 
   return (
     <MailboxProvider messages={messages} boxName="questions">

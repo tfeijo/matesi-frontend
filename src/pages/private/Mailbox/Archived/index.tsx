@@ -28,7 +28,7 @@ type MessageResponse = Omit<Message, 'read' | 'contacted'> & {
 };
 
 const Archived: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[] | null>(null);
 
   useEffect(() => {
     async function loadMessages() {
@@ -74,7 +74,7 @@ const Archived: React.FC = () => {
     }
   }, []);
 
-  if (messages.length === 0) return <Loader size={48} />;
+  if (messages === null) return <Loader size={48} />;
 
   return (
     <MailboxProvider messages={messages} boxName="archives">
