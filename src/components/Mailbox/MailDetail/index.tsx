@@ -21,6 +21,7 @@ const MailDetail: React.FC = ({ children }) => {
     isMessageOpen,
     toggleMessage,
     toggleMessageAsContacted,
+    toggleMessageAsArchived,
   } = useContext(MailboxContext);
 
   const message = messages[selectedMessage];
@@ -28,6 +29,10 @@ const MailDetail: React.FC = ({ children }) => {
   const handleSubmit: SubmitHandler<{ contacted: boolean }> = data => {
     toggleMessageAsContacted(data.contacted);
   };
+
+  function handleArchiveMessage() {
+    toggleMessageAsArchived(message.id, selectedMessage);
+  }
 
   return (
     <Container isOpen={isMessageOpen}>
@@ -80,6 +85,7 @@ const MailDetail: React.FC = ({ children }) => {
                   color="secondary"
                   variant="outline"
                   size="small"
+                  onClick={handleArchiveMessage}
                 >
                   Arquivar
                 </Button>

@@ -19,6 +19,7 @@ const MailList: React.FC = () => {
     selectMessage,
     toggleMessage,
     setMessageAsRead,
+    toggleMessageAsArchived,
   } = useContext(MailboxContext);
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -114,6 +115,7 @@ const MailList: React.FC = () => {
                   color="secondary"
                   variant="outline"
                   size="small"
+                  onClick={() => toggleMessageAsArchived(id, index)}
                 />
                 <Button
                   iconOnly
