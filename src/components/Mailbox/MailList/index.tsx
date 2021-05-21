@@ -1,7 +1,11 @@
 import { useContext, useRef, useState } from 'react';
 import { FormHandles } from '@unform/core';
-import { MdChevronLeft, MdSearch } from 'react-icons/md';
-import { RiCloseLine, RiInboxArchiveLine } from 'react-icons/ri';
+import { MdChevronLeft, MdSearch, MdUndo } from 'react-icons/md';
+import {
+  RiCloseLine,
+  RiInboxArchiveLine,
+  RiInboxUnarchiveLine,
+} from 'react-icons/ri';
 
 import { MailboxContext } from '../../../context/MailboxContext';
 
@@ -16,17 +20,23 @@ const MailList: React.FC = () => {
   const {
     messages,
     selectedMessage,
+    boxName,
     selectMessage,
     toggleMessage,
+    setMessageAsRead,
+    toggleMessageAsArchived,
+    toggleMessageAsDeleted,
   } = useContext(MailboxContext);
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
 
   const { isTabletLandscapeUp } = useBreakpoints();
 
-  const showMessage = (index: number) => {
+  const handleClickMessage = (index: number) => {
     selectMessage(index);
     if (!isTabletLandscapeUp) toggleMessage(true);
+
+    setMessageAsRead(index);
   };
 
   const toggleSearch = () => {
@@ -35,6 +45,11 @@ const MailList: React.FC = () => {
       document.activeElement.blur();
     }
   };
+
+  const ArchiveIcon =
+    boxName === 'archives' ? RiInboxUnarchiveLine : RiInboxArchiveLine;
+
+  const DeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
 
   return (
     <Container>
@@ -91,7 +106,7 @@ const MailList: React.FC = () => {
               <button
                 type="button"
                 aria-label="Ver mensagem"
-                onClick={() => showMessage(index)}
+                onClick={() => handleClickMessage(index)}
               >
                 Ver mensagem
               </button>
@@ -107,17 +122,19 @@ const MailList: React.FC = () => {
               <div className="extra-actions__buttons">
                 <Button
                   iconOnly
-                  icon={RiInboxArchiveLine}
+                  icon={ArchiveIcon}
                   color="secondary"
                   variant="outline"
                   size="small"
+                  onClick={() => toggleMessageAsArchived(id, index)}
                 />
                 <Button
                   iconOnly
-                  icon={RiCloseLine}
+                  icon={DeleteIcon}
                   color="danger"
                   variant="outline"
                   size="small"
+                  onClick={() => toggleMessageAsDeleted(id, index)}
                 />
               </div>
             </div>

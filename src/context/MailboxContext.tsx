@@ -1,6 +1,14 @@
 import { createContext, useState } from 'react';
+import api from '../services/api';
 
-type TCourse = { id: number; name: string };
+type TCourse = { id: string; name: string };
+
+type BoxName =
+  | 'registrations'
+  | 'questions'
+  | 'work_with_us'
+  | 'archives'
+  | 'deletes';
 
 export type TMessage = {
   id: string;
@@ -13,23 +21,30 @@ export type TMessage = {
   contacted: boolean;
   read: boolean;
   courses?: Array<TCourse>;
+  originBox?: 'registrations' | 'questions' | 'work_with_us';
 };
 
-type TProps = { messages: Array<TMessage> };
+type TProps = { messages: Array<TMessage>; boxName?: BoxName };
 
 type TMailboxContent = {
   messages: Array<TMessage>;
+  boxName?: BoxName;
   setActiveMessageState: (updatedMessage: TMessage) => void;
   selectedMessage: number;
   selectMessage: (index: number) => void;
   isMessageOpen: boolean;
   toggleMessage: (open?: boolean) => void;
+  setMessageAsRead: (index: number) => Promise<void>;
+  toggleMessageAsContacted: (contacted: boolean) => Promise<void>;
+  toggleMessageAsArchived: (id: string, index: number) => Promise<void>;
+  toggleMessageAsDeleted: (id: string, index: number) => Promise<void>;
 };
 
 const MailboxContext = createContext<TMailboxContent>({} as TMailboxContent);
 
 const MailboxProvider: React.FC<TProps> = ({
   messages: initialMessages,
+  boxName,
   children,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(-1);
@@ -54,15 +69,98 @@ const MailboxProvider: React.FC<TProps> = ({
     setMessages(updatedMessages);
   };
 
+  const setMessageAsRead = async (messageToRead: number) => {
+    try {
+      const { id, read } = messages[messageToRead];
+
+      if (!boxName) return;
+      if (read) return;
+
+      await api.put(`${boxName}/read/${id}`);
+
+      const updatedMessages = messages.map((message, index) => {
+        if (messageToRead === index)
+          return {
+            ...message,
+            read: true,
+          };
+        return message;
+      });
+
+      setMessages(updatedMessages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleMessageAsContacted = async (contacted: boolean) => {
+    try {
+      if (!boxName) return;
+
+      const { id } = messages[selectedMessage];
+      await api.put(`${boxName}/contact/${id}`);
+
+      setActiveMessageState({
+        ...messages[selectedMessage],
+        contacted,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleMessageAsArchived = async (id: string, indexToDelete: number) => {
+    try {
+      if (!boxName) return;
+      const { originBox } = messages[indexToDelete];
+
+      await api.put(`${originBox || boxName}/archive/${id}`);
+
+      const updatedMessages = messages.filter(message => message.id !== id);
+
+      if (selectedMessage === indexToDelete) setSelectedMessage(-1);
+      else if (indexToDelete < selectedMessage)
+        setSelectedMessage(selectedMessage - 1);
+
+      setMessages(updatedMessages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleMessageAsDeleted = async (id: string, indexToDelete: number) => {
+    try {
+      if (!boxName) return;
+      const { originBox } = messages[indexToDelete];
+
+      await api.put(`${originBox || boxName}/soft_delete/${id}`);
+
+      const updatedMessages = messages.filter(message => message.id !== id);
+
+      if (selectedMessage === indexToDelete) setSelectedMessage(-1);
+      else if (indexToDelete < selectedMessage)
+        setSelectedMessage(selectedMessage - 1);
+
+      setMessages(updatedMessages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <MailboxContext.Provider
       value={{
         messages,
+        boxName,
         setActiveMessageState,
         selectedMessage,
         selectMessage,
         isMessageOpen,
         toggleMessage,
+        setMessageAsRead,
+        toggleMessageAsContacted,
+        toggleMessageAsArchived,
+        toggleMessageAsDeleted,
       }}
     >
       {children}

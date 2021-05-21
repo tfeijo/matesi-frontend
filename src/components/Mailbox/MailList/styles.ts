@@ -65,7 +65,7 @@ export const ListItem = styled.li<ListItemProps>`
   position: relative;
 
   ${({ isRead }) =>
-    !isRead &&
+    isRead &&
     css`
       &::before {
         display: none;

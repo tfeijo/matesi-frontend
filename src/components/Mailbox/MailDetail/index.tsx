@@ -1,6 +1,10 @@
-import { useCallback, useContext, useRef } from 'react';
-import { RiCloseLine, RiInboxArchiveLine } from 'react-icons/ri';
-import { MdChevronLeft } from 'react-icons/md';
+import { useContext, useRef } from 'react';
+import {
+  RiCloseLine,
+  RiInboxArchiveLine,
+  RiInboxUnarchiveLine,
+} from 'react-icons/ri';
+import { MdChevronLeft, MdUndo } from 'react-icons/md';
 
 import { Form } from '@unform/web';
 import { FormHandles, SubmitHandler } from '@unform/core';
@@ -19,25 +23,31 @@ const MailDetail: React.FC = ({ children }) => {
     messages,
     selectedMessage,
     isMessageOpen,
+    boxName,
     toggleMessage,
-    setActiveMessageState,
+    toggleMessageAsContacted,
+    toggleMessageAsArchived,
+    toggleMessageAsDeleted,
   } = useContext(MailboxContext);
 
   const message = messages[selectedMessage];
 
-  const handleSubmit: SubmitHandler<{
-    contacted: boolean;
-  }> = useCallback(
-    data => {
-      // const formData = { id: message?.id, ...data };
+  const handleSubmit: SubmitHandler<{ contacted: boolean }> = data => {
+    toggleMessageAsContacted(data.contacted);
+  };
 
-      setActiveMessageState({
-        ...message,
-        contacted: data.contacted,
-      });
-    },
-    [message, setActiveMessageState],
-  );
+  function handleArchiveMessage() {
+    toggleMessageAsArchived(message.id, selectedMessage);
+  }
+
+  function handleDeleteMessage() {
+    toggleMessageAsDeleted(message.id, selectedMessage);
+  }
+
+  const ArchiveIcon =
+    boxName === 'archives' ? RiInboxUnarchiveLine : RiInboxArchiveLine;
+
+  const DeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
 
   return (
     <Container isOpen={isMessageOpen}>
@@ -86,20 +96,22 @@ const MailDetail: React.FC = ({ children }) => {
 
               <div className="buttons">
                 <Button
-                  icon={RiInboxArchiveLine}
+                  icon={ArchiveIcon}
                   color="secondary"
                   variant="outline"
                   size="small"
+                  onClick={handleArchiveMessage}
                 >
-                  Arquivar
+                  {boxName === 'archives' ? 'Desarquivar' : 'Arquivar'}
                 </Button>
                 <Button
-                  icon={RiCloseLine}
+                  icon={DeleteIcon}
                   color="danger"
                   variant="outline"
                   size="small"
+                  onClick={handleDeleteMessage}
                 >
-                  Excluir
+                  {boxName === 'deletes' ? 'Restaurar' : 'Excluir'}
                 </Button>
               </div>
             </Actions>
