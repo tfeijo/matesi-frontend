@@ -44,7 +44,7 @@ export const Backdrop = styled.div`
   cursor: pointer;
 `;
 
-const navLinkStyle = css`
+export const navbarLinkStyle = css`
   display: block;
   padding: 1rem;
   font: var(--font-body-normal-heavy);
@@ -113,67 +113,12 @@ export const NavMenu = styled.nav<{ isOpen: boolean }>`
       }
 
       > a:not(.enroll-button) {
-        ${navLinkStyle}
-      }
-
-      &:last-of-type {
-        flex: 1;
-        display: flex;
-        align-items: flex-end;
+        ${navbarLinkStyle}
       }
     }
 
     .enroll-button {
       width: 100%;
-    }
-  }
-`;
-
-export const Dropdown = styled.div<{ isOpen: boolean }>`
-  ${mediaQuery.tabletLandscapeUp} {
-    position: relative;
-  }
-
-  .dropdown-trigger {
-    ${navLinkStyle}
-    border: none;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    background-color: transparent;
-
-    svg {
-      margin-left: 0.4rem;
-      transition: transform 0.1s;
-
-      ${({ isOpen }) =>
-    /* eslint-disable */
-    isOpen &&
-    css`
-        /* eslint-enable */
-          transform: rotate(180deg);
-        `};
-    }
-  }
-
-  > ul {
-    border-radius: var(--radius-medium);
-    background-color: var(--color-secondary-dark);
-
-    margin: 0.3rem 0;
-    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-
-    ${mediaQuery.tabletLandscapeUp} {
-      position: absolute;
-      top: calc(100% + 0.4rem);
-      left: 0;
-      min-width: 15rem;
-      padding: 0.8rem;
-      box-shadow: var(--elevation-x-large);
-    }
-
-    li a {
-      ${navLinkStyle}
     }
   }
 `;
