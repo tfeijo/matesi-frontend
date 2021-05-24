@@ -33,11 +33,13 @@ const AuthProvider: React.FC = ({ children }) => {
     }
 
     setIsLoading(false);
-  }, [token, user]);
+  }, []);
 
   const signIn = useCallback(
     async (credentials: Credentials) => {
       const { data } = await api.post('sessions', credentials);
+
+      api.defaults.headers.Authorization = `Bearer ${data.token}`;
 
       setUser(data.user);
       setToken(data.token);
@@ -48,7 +50,7 @@ const AuthProvider: React.FC = ({ children }) => {
   const signOut = useCallback(() => {
     setUser(null);
     setToken('');
-    api.defaults.headers.authorization = undefined;
+    api.defaults.headers.Authorization = undefined;
   }, [setToken, setUser]);
 
   return (
