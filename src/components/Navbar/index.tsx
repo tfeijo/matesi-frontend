@@ -1,37 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
-import { MdClose, MdKeyboardArrowDown, MdMenu } from 'react-icons/md';
+import { useEffect, useState } from 'react';
+import { MdClose, MdMenu } from 'react-icons/md';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { ReactComponent as Logo } from '../../assets/logo.svg';
+import useAuth from '../../hooks/useAuth';
 import Button from '../Button';
+import { NavDropdown } from './NavDropdown';
 
-import { Header, Container, Backdrop, NavMenu, Dropdown } from './styles';
+import { Header, Container, Backdrop, NavMenu } from './styles';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
 
-  function closeDropdown(e: MouseEvent) {
-    if (e.target instanceof Node) {
-      if (!dropdownRef.current?.contains(e.target)) {
-        setIsDropdownOpen(false);
-      }
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('click', closeDropdown);
-
-    return () => document.removeEventListener('click', closeDropdown);
-  }, []);
-
   useEffect(() => {
     setIsMenuOpen(false);
-    setIsDropdownOpen(false);
-    document.body.style.overflow = 'initial';
+    document.body.removeAttribute('style');
   }, [location]);
 
   function openMenu() {
@@ -41,7 +26,7 @@ const Navbar: React.FC = () => {
 
   function closeMenu() {
     setIsMenuOpen(false);
-    document.body.style.overflow = 'initial';
+    document.body.removeAttribute('style');
   }
 
   return (
@@ -74,33 +59,16 @@ const Navbar: React.FC = () => {
 
           <ul className="main_nav">
             <li>
-              <Dropdown isOpen={isDropdownOpen} ref={dropdownRef}>
-                <button
-                  type="button"
-                  className="dropdown-trigger"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  Cursos <MdKeyboardArrowDown size={24} />
-                </button>
-
-                <ul>
-                  <li>
-                    <NavLink to="/cursos/ingles">Inglês</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/cursos/espanhol">Espanhol</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/cursos/frances">Frances</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/cursos/coreano">Coreano</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/cursos/alemao">Alemão</NavLink>
-                  </li>
-                </ul>
-              </Dropdown>
+              <NavDropdown
+                title="cursos"
+                links={[
+                  { to: '/cursos/ingles', title: 'Inglês' },
+                  { to: '/cursos/espanhol', title: 'Espanhol' },
+                  { to: '/cursos/frances', title: 'Frances' },
+                  { to: '/cursos/coreano', title: 'Coreano' },
+                  { to: '/cursos/alemao', title: 'Alemão' },
+                ]}
+              />
             </li>
             <li>
               <NavLink to="/metodologia">Metodologia</NavLink>
