@@ -11,6 +11,7 @@ import { Header, Container, Backdrop, NavMenu } from './styles';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isSigned, signOut } = useAuth();
 
   const location = useLocation();
 
@@ -79,11 +80,28 @@ const Navbar: React.FC = () => {
             <li>
               <NavLink to="/contato">Contato</NavLink>
             </li>
-            <li>
-              <Button asLink to="/matricular" className="enroll-button">
-                Matricule-se
-              </Button>
-            </li>
+            {isSigned ? (
+              <li>
+                <NavDropdown
+                  title="Portal"
+                  links={[
+                    { to: '/mensagens/matricular', title: 'Mensagens' },
+                    { to: '/alunos', title: 'Alunos' },
+                    {
+                      to: '/sair',
+                      title: 'Sair',
+                      onClick: () => signOut(),
+                    },
+                  ]}
+                />
+              </li>
+            ) : (
+              <li>
+                <Button asLink to="/matricular" className="enroll-button">
+                  Matricule-se
+                </Button>
+              </li>
+            )}
           </ul>
         </NavMenu>
       </Container>
