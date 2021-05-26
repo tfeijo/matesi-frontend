@@ -10,7 +10,8 @@ import api from '../../../services/api';
 import { Container } from './styles';
 
 interface IFormData {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   linkedin: string;
@@ -25,9 +26,12 @@ const WorkingUs: React.FC = () => {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
-        name: Yup.string()
+        first_name: Yup.string()
           .min(3, 'O nome deve possuir ao menos 3 letras.')
           .required('O nome é obrigatório.'),
+        last_name: Yup.string()
+          .min(3, 'O sobrenome deve possuir ao menos 3 letras.')
+          .required('O sobrenome é obrigatório.'),
         email: Yup.string()
           .email('O email deve ser um email válido.')
           .required('O email é obrigatório.'),
@@ -81,7 +85,8 @@ const WorkingUs: React.FC = () => {
       </p>
 
       <Form ref={formRef} onSubmit={handleSubmit}>
-        <Input label="Nome" name="name" />
+        <Input label="Nome" name="first_name" />
+        <Input label="Sobrenome" name="last_name" />
         <Input type="email" label="E-mail" name="email" />
         <Input label="Telefone" name="phone" />
         <Input label="LinkedIn" name="linkedin" />
