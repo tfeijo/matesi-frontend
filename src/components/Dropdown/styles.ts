@@ -3,6 +3,10 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: inline-block;
   position: relative;
+
+  button svg {
+    pointer-events: none;
+  }
 `;
 
 export const Content = styled.div`

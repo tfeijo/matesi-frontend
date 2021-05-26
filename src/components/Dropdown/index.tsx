@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 import Button from '../Button';
 
@@ -19,13 +19,28 @@ const Dropdown: DropdownComponent<DropdownProps> = ({
   children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  function closeDropdown(e: MouseEvent) {
+    if (e.target instanceof Node) {
+      if (!dropdownRef.current?.children[0].contains(e.target)) {
+        setIsOpen(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('click', closeDropdown);
+
+    return () => document.removeEventListener('click', closeDropdown);
+  }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <Container className={className}>
+    <Container className={className} ref={dropdownRef}>
       <Button
         color="neutral"
         variant="outline"
