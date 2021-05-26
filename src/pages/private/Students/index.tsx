@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdImportExport, MdSearch } from 'react-icons/md';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
+import { toast } from 'react-toastify';
 import { ReactComponent as UsaFlag } from '../../../assets/flags/usa-square.svg';
 import { ReactComponent as SpainFlag } from '../../../assets/flags/spain-square.svg';
 import { ReactComponent as FranceFlag } from '../../../assets/flags/france-square.svg';
@@ -15,6 +16,8 @@ import Input from '../../../components/Input';
 import { Container, Header, Filters, List, Courses, Footer } from './styles';
 import Pagination from '../../../components/Pagination';
 import Dropdown from '../../../components/Dropdown';
+import api from '../../../services/api';
+import Loader from '../../../components/Loader';
 
 const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   english: UsaFlag,
@@ -24,65 +27,111 @@ const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   german: GermanyFlag,
 };
 
-const STUDENTS = [
-  {
-    id: 1,
-    name: 'João da Silva Souza Fulano Nome Longo',
-    email: 'umemailgrande12345@quentemail.com.br',
-    phone: '(55) 24 91919-0101',
-    courses: [{ id: 1, name: 'german' }],
-  },
-  {
-    id: 2,
-    name: 'João da Silva Souza Fulano',
-    email: 'emaildojoao123@email.com',
-    phone: '5524919190101',
+type Course = {
+  id: string;
+  name: string;
+};
 
-    courses: [
-      { id: 1, name: 'english' },
-      { id: 2, name: 'spanish' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'João da Silva Souza Fulano',
-    email: 'email@email.com',
-    phone: '5524919190101',
-    courses: [
-      { id: 1, name: 'french' },
-      { id: 2, name: 'spanish' },
-      { id: 3, name: 'korean' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'João da Silva Souza Fulano',
-    email: 'email@email.com',
-    phone: '5524919190101',
-    courses: [
-      { id: 1, name: 'english' },
-      { id: 2, name: 'korean' },
-      { id: 3, name: 'german' },
-      { id: 4, name: 'french' },
-    ],
-  },
-  {
-    id: 5,
-    name: 'João da Silva Souza Fulano',
-    email: 'email@email.com',
-    phone: '5524919190101',
-    courses: [
-      { id: 1, name: 'korean' },
-      { id: 2, name: 'spanish' },
-      { id: 3, name: 'german' },
-      { id: 4, name: 'english' },
-      { id: 5, name: 'french' },
-    ],
-  },
-];
+type CourseWithFlag = Course & { flag: string };
+
+type Student = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  courses: CourseWithFlag[];
+};
+
+type PaginationInfo = {
+  current_page: number;
+  total: number;
+  last_page: number;
+};
+
+type StudentsWithoutFlag = Omit<Student, 'courses'> & {
+  courses: Course[];
+};
+
+type StudentsResponse = PaginationInfo & { users: StudentsWithoutFlag[] };
 
 const Students: React.FC = () => {
+  const [students, setStudents] = useState<Student[] | null>(null);
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
+    {} as PaginationInfo,
+  );
+
+  function formatStudents(users: StudentsWithoutFlag[]) {
+    return users.map(user => {
+      const courses = user.courses.map(course => {
+        let flag;
+
+        switch (course.name) {
+          case 'Inglês':
+            flag = 'english';
+            break;
+
+          case 'Espanhol':
+            flag = 'spanish';
+            break;
+
+          case 'Francês':
+            flag = 'french';
+            break;
+
+          case 'Coreano':
+            flag = 'korean';
+            break;
+
+          case 'Alemão':
+            flag = 'german';
+            break;
+
+          default:
+            flag = '';
+            break;
+        }
+
+        return {
+          ...course,
+          flag,
+        };
+      });
+
+      return {
+        ...user,
+        courses,
+      };
+    });
+  }
+
   const formRef = useRef<FormHandles>(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const { data } = await api.get<StudentsResponse>('users');
+
+        setPaginationInfo({
+          current_page: data.current_page,
+          total: data.total,
+          last_page: data.last_page,
+        });
+
+        const studentsWithFlag = formatStudents(data.users);
+
+        setStudents(studentsWithFlag);
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          'Não foi possível carregar os alunos cadastrados. Por favor, tente novamente',
+        );
+      }
+    }
+
+    loadData();
+  }, []);
+
+  if (students === null) return <Loader size={48} />;
 
   return (
     <Container>
@@ -156,12 +205,14 @@ const Students: React.FC = () => {
       </Header>
 
       <List>
-        {STUDENTS.map(({ id, name, email, phone, courses }) => (
-          <li key={id}>
-            <p>{name}</p>
+        {students.map(({ first_name, last_name, email, phone, courses }) => (
+          <li key={email}>
+            <p>
+              {first_name} {last_name}
+            </p>
             <Courses>
               {courses.map(course => {
-                const FlagSVG = COURSE_FLAGS[course.name];
+                const FlagSVG = COURSE_FLAGS[course.flag];
                 return <FlagSVG key={course.id} />;
               })}
             </Courses>
@@ -178,10 +229,10 @@ const Students: React.FC = () => {
       </List>
 
       <Footer>
-        <p>Mostrando 1-10 de 20</p>
+        <p>Mostrando 1-10 de {paginationInfo.total}</p>
 
         <Pagination
-          totalPages={20}
+          totalPages={paginationInfo.last_page}
           onPageChange={page => alert(`A página atual é ${page}`)}
         />
       </Footer>
