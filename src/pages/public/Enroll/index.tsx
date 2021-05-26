@@ -22,7 +22,8 @@ interface FormCourses {
 }
 
 interface IFormData {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   courses: FormCourses;
@@ -65,16 +66,20 @@ const Enroll: React.FC = () => {
         .filter(course => course);
 
       const formData = {
-        name: data.name,
+        first_name: data.first_name,
+        last_name: data.last_name,
         email: data.email,
         phone: data.phone,
         courses_id: selectedCourses,
       };
 
       const schema = Yup.object().shape({
-        name: Yup.string()
+        first_name: Yup.string()
           .min(3, 'O nome deve possuir ao menos 3 letras.')
           .required('O nome é obrigatório.'),
+        last_name: Yup.string()
+          .min(3, 'O sobrenome deve possuir ao menos 3 letras.')
+          .required('O sobrenome é obrigatório.'),
         email: Yup.string()
           .email('O email deve ser um email válido.')
           .required('O email é obrigatório.'),
@@ -147,7 +152,8 @@ const Enroll: React.FC = () => {
                 <span className="courses-error">{coursesError}</span>
               )}
             </div>
-            <Input label="Nome" name="name" />
+            <Input label="Nome" name="first_name" />
+            <Input label="Sobrenome" name="last_name" />
             <Input type="email" label="E-mail" name="email" />
             <Input label="Telefone" name="phone" />
 
