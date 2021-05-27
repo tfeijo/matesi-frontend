@@ -69,6 +69,10 @@ export const Message = styled.div`
 
   p {
     margin-top: 2.4rem;
+
+    &.message {
+      white-space: pre-line;
+    }
   }
 
   a {

@@ -1,10 +1,10 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 
 import Button from '../../../../../components/Button';
 import CourseCheckboxGroup from '../../../../../components/CourseCheckboxGroup';
-import { MailboxContext } from '../../../../../context/MailboxContext';
+import { useMailbox } from '../../../../../context/MailboxContext';
 
 import { ConfirmMessageContainer } from './styles';
 
@@ -18,14 +18,18 @@ export const ConfirmationForm: React.FC<EnrollConfirmationFormProps> = ({
   allCourses,
 }) => {
   const formRef = useRef<FormHandles>(null);
-  const { messages, selectedMessage } = useContext(MailboxContext);
+  const { messages, selectedMessage } = useMailbox();
 
   if (selectedMessage < 0) return null;
 
   return (
     <ConfirmMessageContainer>
       <h1>
-        Matricular <span>{messages[selectedMessage].name}</span>
+        Matricular{' '}
+        <span>
+          {messages[selectedMessage].firstName}{' '}
+          {messages[selectedMessage].lastName}
+        </span>
       </h1>
       <p>Confirme os idiomas a matricular o aluno.</p>
 

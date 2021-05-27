@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FormHandles } from '@unform/core';
 import { MdChevronLeft, MdSearch, MdUndo } from 'react-icons/md';
 import {
@@ -7,13 +7,13 @@ import {
   RiInboxUnarchiveLine,
 } from 'react-icons/ri';
 
-import { MailboxContext } from '../../../context/MailboxContext';
+import { useMailbox } from '../../../context/MailboxContext';
 
 import Button from '../../Button';
 import Input from '../../Input';
 import Link from '../../Link';
 
-import { Container, Header, SearchForm, ListItem } from './styles';
+import { Container, Header, SearchForm, ListItem, LoadMore } from './styles';
 import useBreakpoints from '../../../hooks/useBreakpoints';
 
 const MailList: React.FC = () => {
@@ -21,12 +21,13 @@ const MailList: React.FC = () => {
     messages,
     selectedMessage,
     boxName,
+    paginationInfo,
     selectMessage,
     toggleMessage,
     setMessageAsRead,
     toggleMessageAsArchived,
     toggleMessageAsDeleted,
-  } = useContext(MailboxContext);
+  } = useMailbox();
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -49,13 +50,15 @@ const MailList: React.FC = () => {
   const ArchiveIcon =
     boxName === 'archives' ? RiInboxUnarchiveLine : RiInboxArchiveLine;
 
-  const DeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
+  const SoftDeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
+  const softDeleteColor = boxName === 'deletes' ? 'neutral' : 'danger';
 
   return (
     <Container>
       <Header isSearching={isSearching}>
         <h2>
-          {messages.length} {messages.length === 1 ? 'Mensagem' : 'Mensagens'}
+          {paginationInfo.totalRegisters}{' '}
+          {paginationInfo.totalRegisters === 1 ? 'Mensagem' : 'Mensagens'}
         </h2>
 
         <SearchForm
@@ -93,11 +96,21 @@ const MailList: React.FC = () => {
       </Header>
 
       <ul>
-        {messages.map(({ id, name, email, subject, linkedin, read }, index) => (
-          <ListItem key={id} isActive={selectedMessage === index} isRead={read}>
+        {messages.map(
+          (
+            { id, firstName, lastName, email, subject, linkedin, isRead },
+            index,
+          ) => (
+            <ListItem
+              key={id}
+              isActive={selectedMessage === index}
+              isRead={isRead}
+            >
             <div className="info">
               <h4>
-                <span>{name}</span>
+                  <span>
+                    {firstName} {lastName}
+                  </span>
                 <span>({email})</span>
               </h4>
 
@@ -130,8 +143,8 @@ const MailList: React.FC = () => {
                 />
                 <Button
                   iconOnly
-                  icon={DeleteIcon}
-                  color="danger"
+                    icon={SoftDeleteIcon}
+                    color={softDeleteColor}
                   variant="outline"
                   size="small"
                   onClick={() => toggleMessageAsDeleted(id, index)}
@@ -139,7 +152,8 @@ const MailList: React.FC = () => {
               </div>
             </div>
           </ListItem>
-        ))}
+          ),
+        )}
       </ul>
     </Container>
   );

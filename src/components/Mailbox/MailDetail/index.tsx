@@ -1,4 +1,4 @@
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import {
   RiCloseLine,
   RiInboxArchiveLine,
@@ -8,13 +8,13 @@ import { MdChevronLeft, MdUndo } from 'react-icons/md';
 
 import { Form } from '@unform/web';
 import { FormHandles, SubmitHandler } from '@unform/core';
-import { MailboxContext } from '../../../context/MailboxContext';
 
 import Link from '../../Link';
 import Button from '../../Button';
 
 import { Container, BackButton, Main, Message, Actions } from './styles';
 import Checkbox from '../../Checkbox';
+import { useMailbox } from '../../../context/MailboxContext';
 
 const MailDetail: React.FC = ({ children }) => {
   const formRef = useRef<FormHandles>(null);
@@ -28,7 +28,7 @@ const MailDetail: React.FC = ({ children }) => {
     toggleMessageAsContacted,
     toggleMessageAsArchived,
     toggleMessageAsDeleted,
-  } = useContext(MailboxContext);
+  } = useMailbox();
 
   const message = messages[selectedMessage];
 
@@ -47,7 +47,8 @@ const MailDetail: React.FC = ({ children }) => {
   const ArchiveIcon =
     boxName === 'archives' ? RiInboxUnarchiveLine : RiInboxArchiveLine;
 
-  const DeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
+  const SoftDeleteIcon = boxName === 'deletes' ? MdUndo : RiCloseLine;
+  const softDeleteColor = boxName === 'deletes' ? 'neutral' : 'danger';
 
   return (
     <Container isOpen={isMessageOpen}>
@@ -63,13 +64,13 @@ const MailDetail: React.FC = ({ children }) => {
               <h3>{message.subject}</h3>
 
               <div className="about">
-                <h4>{message.name}</h4>
+                <h4>{`${message.firstName} ${message.lastName}`}</h4>
                 <span>
                   {message.email} - {message.phone}
                 </span>
               </div>
 
-              {message.message && <p>{message.message}</p>}
+              {message.message && <p className="message">{message.message}</p>}
 
               {message.linkedin && (
                 <Link color="secondary" external href={message.linkedin}>
@@ -83,7 +84,7 @@ const MailDetail: React.FC = ({ children }) => {
                 ref={formRef}
                 onSubmit={handleSubmit}
                 initialData={{
-                  contacted: message.contacted,
+                  contacted: message.isContact,
                 }}
               >
                 <Checkbox
@@ -105,8 +106,8 @@ const MailDetail: React.FC = ({ children }) => {
                   {boxName === 'archives' ? 'Desarquivar' : 'Arquivar'}
                 </Button>
                 <Button
-                  icon={DeleteIcon}
-                  color="danger"
+                  icon={SoftDeleteIcon}
+                  color={softDeleteColor}
                   variant="outline"
                   size="small"
                   onClick={handleDeleteMessage}
