@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import {
   RiCloseLine,
+  RiDeleteBin2Line,
   RiInboxArchiveLine,
   RiInboxUnarchiveLine,
 } from 'react-icons/ri';
@@ -28,6 +29,7 @@ const MailDetail: React.FC = ({ children }) => {
     toggleMessageAsContacted,
     toggleMessageAsArchived,
     toggleMessageAsDeleted,
+    permanentDeleteMessage,
   } = useMailbox();
 
   const message = messages[selectedMessage];
@@ -42,6 +44,10 @@ const MailDetail: React.FC = ({ children }) => {
 
   function handleDeleteMessage() {
     toggleMessageAsDeleted(message.id, selectedMessage);
+  }
+
+  function handlePermanentDeleteMessage() {
+    permanentDeleteMessage(message.id, selectedMessage);
   }
 
   const ArchiveIcon =
@@ -114,6 +120,17 @@ const MailDetail: React.FC = ({ children }) => {
                 >
                   {boxName === 'deletes' ? 'Restaurar' : 'Excluir'}
                 </Button>
+                {boxName === 'deletes' && (
+                  <Button
+                    icon={RiDeleteBin2Line}
+                    color="danger"
+                    variant="outline"
+                    size="small"
+                    onClick={handlePermanentDeleteMessage}
+                  >
+                    Excluir
+                  </Button>
+                )}
               </div>
             </Actions>
 

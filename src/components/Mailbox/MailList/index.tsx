@@ -3,6 +3,7 @@ import { FormHandles } from '@unform/core';
 import { MdChevronLeft, MdSearch, MdUndo } from 'react-icons/md';
 import {
   RiCloseLine,
+  RiDeleteBin2Line,
   RiInboxArchiveLine,
   RiInboxUnarchiveLine,
 } from 'react-icons/ri';
@@ -27,6 +28,7 @@ const MailList: React.FC = () => {
     setMessageAsRead,
     toggleMessageAsArchived,
     toggleMessageAsDeleted,
+    permanentDeleteMessage,
     handleLoadNextPage,
   } = useMailbox();
   const searchFormRef = useRef<FormHandles>(null);
@@ -107,52 +109,63 @@ const MailList: React.FC = () => {
               isActive={selectedMessage === index}
               isRead={isRead}
             >
-            <div className="info">
-              <h4>
+              <div className="info">
+                <h4>
                   <span>
                     {firstName} {lastName}
                   </span>
-                <span>({email})</span>
-              </h4>
+                  <span>({email})</span>
+                </h4>
 
-              {subject && <p>{subject}</p>}
+                {subject && <p>{subject}</p>}
 
-              <button
-                type="button"
-                aria-label="Ver mensagem"
-                onClick={() => handleClickMessage(index)}
-              >
-                Ver mensagem
-              </button>
-            </div>
+                <button
+                  type="button"
+                  aria-label="Ver mensagem"
+                  onClick={() => handleClickMessage(index)}
+                >
+                  Ver mensagem
+                </button>
+              </div>
 
-            <div className="extra-actions">
-              {linkedin && (
-                <Link color="secondary" external href={linkedin}>
-                  LinkedIn
-                </Link>
-              )}
+              <div className="extra-actions">
+                {linkedin && (
+                  <Link color="secondary" external href={linkedin}>
+                    LinkedIn
+                  </Link>
+                )}
 
-              <div className="extra-actions__buttons">
-                <Button
-                  iconOnly
-                  icon={ArchiveIcon}
-                  color="secondary"
-                  variant="outline"
-                  size="small"
-                  onClick={() => toggleMessageAsArchived(id, index)}
-                />
-                <Button
-                  iconOnly
+                <div className="extra-actions__buttons">
+                  <Button
+                    iconOnly
+                    icon={ArchiveIcon}
+                    color="secondary"
+                    variant="outline"
+                    size="small"
+                    onClick={() => toggleMessageAsArchived(id, index)}
+                  />
+                  <Button
+                    iconOnly
                     icon={SoftDeleteIcon}
                     color={softDeleteColor}
-                  variant="outline"
-                  size="small"
-                  onClick={() => toggleMessageAsDeleted(id, index)}
-                />
+                    variant="outline"
+                    size="small"
+                    onClick={() => toggleMessageAsDeleted(id, index)}
+                  />
+
+                  {boxName === 'deletes' && (
+                    <Button
+                      iconOnly
+                      icon={RiDeleteBin2Line}
+                      color="danger"
+                      variant="outline"
+                      size="small"
+                      onClick={() => permanentDeleteMessage(id, index)}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          </ListItem>
+            </ListItem>
           ),
         )}
       </ul>

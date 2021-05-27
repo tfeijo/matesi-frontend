@@ -71,5 +71,6 @@ export interface IMailboxContextData {
   toggleMessageAsContacted: (contacted: boolean) => Promise<void>;
   toggleMessageAsArchived: (id: string, index: number) => Promise<void>;
   toggleMessageAsDeleted: (id: string, index: number) => Promise<void>;
+  permanentDeleteMessage: (id: string, index: number) => Promise<void>;
   handleLoadNextPage: () => Promise<void>;
 }

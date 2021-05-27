@@ -144,6 +144,31 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
     }
   };
 
+  const permanentDeleteMessage = async (id: string, indexToDelete: number) => {
+    try {
+      const { type } = messages[indexToDelete];
+
+      await api.delete(`${type || boxName}/delete/${id}`);
+
+      const updatedMessages = messages.filter(message => message.id !== id);
+
+      if (selectedMessage === indexToDelete) setSelectedMessage(-1);
+      else if (indexToDelete < selectedMessage)
+        setSelectedMessage(selectedMessage - 1);
+
+      setMessages(updatedMessages);
+      setPaginationInfo({
+        ...paginationInfo,
+        totalRegisters: paginationInfo.totalRegisters - 1,
+      });
+    } catch (error) {
+      toast.error(
+        'Um erro ocorreu ao excluir a mensagem. Por favor, tente novamente',
+      );
+      console.log(error);
+    }
+  };
+
   const handleLoadNextPage = async () => {
     const { page, lastPage } = paginationInfo;
 
@@ -186,6 +211,7 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
         toggleMessageAsContacted,
         toggleMessageAsArchived,
         toggleMessageAsDeleted,
+        permanentDeleteMessage,
         handleLoadNextPage,
       }}
     >
