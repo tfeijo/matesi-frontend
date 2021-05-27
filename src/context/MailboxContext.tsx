@@ -144,6 +144,33 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
     }
   };
 
+  const handleLoadNextPage = async () => {
+    const { page, lastPage } = paginationInfo;
+
+    if (page === lastPage) return;
+
+    try {
+      const uri = `${boxName}?page=${page + 1}`;
+      const { data } = await api.get<TMailboxAPIResponse>(uri);
+
+      const formattedData = dataFormatter({
+        ...data,
+        page: Number(data.page),
+      });
+
+      setPaginationInfo({
+        ...paginationInfo,
+        page: formattedData.paginationInfo.page,
+      });
+      setMessages([...messages, ...formattedData.messages]);
+    } catch (error) {
+      toast.error(
+        'Um erro ocorreu ao carregar as mensagens. Por favor, tente novamente',
+      );
+      console.log(error);
+    }
+  };
+
   return (
     <MailboxContext.Provider
       value={{
@@ -159,6 +186,7 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
         toggleMessageAsContacted,
         toggleMessageAsArchived,
         toggleMessageAsDeleted,
+        handleLoadNextPage,
       }}
     >
       {children}

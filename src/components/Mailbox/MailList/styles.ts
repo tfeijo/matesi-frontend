@@ -161,3 +161,8 @@ export const ListItem = styled.li<ListItemProps>`
     }
   }
 `;
+
+export const LoadMore = styled.div`
+  margin: 3.2rem 0 4.8rem;
+  text-align: center;
+`;

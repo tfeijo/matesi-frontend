@@ -27,6 +27,7 @@ const MailList: React.FC = () => {
     setMessageAsRead,
     toggleMessageAsArchived,
     toggleMessageAsDeleted,
+    handleLoadNextPage,
   } = useMailbox();
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -155,6 +156,19 @@ const MailList: React.FC = () => {
           ),
         )}
       </ul>
+
+      {messages.length === 0 ||
+        paginationInfo.page === paginationInfo.lastPage || (
+          <LoadMore>
+            <Button
+              variant="outline"
+              color="neutral"
+              onClick={() => handleLoadNextPage()}
+            >
+              Carregar mais
+            </Button>
+          </LoadMore>
+        )}
     </Container>
   );
 };
