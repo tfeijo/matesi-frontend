@@ -54,11 +54,24 @@ type StudentsWithoutFlag = Omit<Student, 'courses'> & {
 
 type StudentsResponse = PaginationInfo & { users: StudentsWithoutFlag[] };
 
+type Filters = {
+  orderBy: string;
+  course: string;
+  search: string;
+};
+
 const Students: React.FC = () => {
   const [students, setStudents] = useState<Student[] | null>(null);
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
-    {} as PaginationInfo,
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(
+    null,
   );
+  const [filters, setFilters] = useState<Filters>({
+    orderBy: '',
+    course: '',
+    search: '',
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   function formatStudents(users: StudentsWithoutFlag[]) {
     return users.map(user => {
@@ -107,31 +120,80 @@ const Students: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   useEffect(() => {
-    async function loadData() {
+    async function loadCourses() {
       try {
-        const { data } = await api.get<StudentsResponse>('users');
+        const { data } = await api.get('courses');
 
-        setPaginationInfo({
-          current_page: data.current_page,
-          total: data.total,
-          last_page: data.last_page,
-        });
-
-        const studentsWithFlag = formatStudents(data.users);
-
-        setStudents(studentsWithFlag);
+        setAllCourses(data);
       } catch (error) {
         console.log(error);
-        toast.error(
-          'Não foi possível carregar os alunos cadastrados. Por favor, tente novamente',
-        );
       }
     }
-
-    loadData();
+    loadCourses();
   }, []);
 
-  if (students === null) return <Loader size={48} />;
+  async function loadStudents(page = 1) {
+    try {
+      setIsLoading(true);
+      const { orderBy, course, search } = filters;
+
+      const { data } = await api.get<StudentsResponse>('users', {
+        params: {
+          orderBy,
+          course,
+          search,
+          page,
+        },
+      });
+
+      setPaginationInfo({
+        current_page: data.current_page,
+        total: data.total,
+        last_page: data.last_page,
+      });
+
+      const studentsWithFlag = formatStudents(data.users);
+
+      setStudents(studentsWithFlag);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        'Não foi possível carregar os alunos cadastrados. Por favor, tente novamente',
+      );
+    }
+  }
+
+  useEffect(() => {
+    loadStudents();
+  }, [filters]);
+
+  function handleFilterByCourse(id: string) {
+    setFilters({
+      ...filters,
+      course: id,
+    });
+  }
+
+  function handleSearch(search: string) {
+    setFilters({
+      ...filters,
+      search,
+    });
+  }
+
+  function handleOrderBy(field: 'first_name' | 'email' | 'phone') {
+    setFilters({
+      ...filters,
+      orderBy: field,
+    });
+  }
+
+  function handlePageChange(page: number) {
+    loadStudents(page);
+  }
+
+  if (students === null) return <Loader size={48} style={{ height: '80vh' }} />;
 
   return (
     <Container>
@@ -143,42 +205,59 @@ const Students: React.FC = () => {
             <div className="buttons">
               <Dropdown className="dropdown" triggerTitle="Ordenar">
                 <Dropdown.Item>
-                  <button type="button">Nome: Asc</button>
+                  <button
+                    type="button"
+                    onClick={() => handleOrderBy('first_name')}
+                  >
+                    Nome
+                  </button>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <button type="button">Nome: Desc</button>
+                  <button type="button" onClick={() => handleOrderBy('email')}>
+                    Email
+                  </button>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <button type="button">E-mail: Asc</button>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <button type="button">E-mail: Desc</button>
+                  <button type="button" onClick={() => handleOrderBy('phone')}>
+                    Telefone
+                  </button>
                 </Dropdown.Item>
               </Dropdown>
 
-              <Dropdown className="dropdown" triggerTitle="Idioma">
-                <Dropdown.Item>
-                  <button type="button">Inglês</button>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <button type="button">Espanhol</button>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <button type="button">Francês</button>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <button type="button">Alemão</button>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <button type="button">Coreano</button>
-                </Dropdown.Item>
-              </Dropdown>
+              {allCourses.length > 0 && (
+                <Dropdown className="dropdown" triggerTitle="Idioma">
+                  <Dropdown.Item>
+                    <button
+                      type="button"
+                      onClick={() => handleFilterByCourse('')}
+                    >
+                      Todos
+                    </button>
+                  </Dropdown.Item>
+                  {allCourses.map(course => (
+                    <Dropdown.Item key={course.id}>
+                      <button
+                        type="button"
+                        onClick={() => handleFilterByCourse(course.id)}
+                      >
+                        {course.name}
+                      </button>
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown>
+              )}
             </div>
 
-            <Form ref={formRef} onSubmit={data => console.log(data)}>
+            <Form
+              ref={formRef}
+              onSubmit={(data: { search: string }) => {
+                handleSearch(data.search);
+              }}
+            >
               <div className="search-box">
                 <Input name="search" placeholder="Pesquisar" />
                 <Button
+                  type="submit"
                   iconOnly
                   icon={MdSearch}
                   color="neutral"
@@ -190,52 +269,56 @@ const Students: React.FC = () => {
         </div>
 
         <div className="list-header">
-          <button type="button">
-            Nome <MdImportExport size={20} />
-          </button>
-
+          <p>Nome</p>
           <p>Cursos</p>
-
-          <button type="button">
-            Email <MdImportExport size={20} />
-          </button>
-
+          <p>Email</p>
           <p>Telefone</p>
         </div>
       </Header>
 
-      <List>
-        {students.map(({ first_name, last_name, email, phone, courses }) => (
-          <li key={email}>
-            <p>
-              {first_name} {last_name}
-            </p>
-            <Courses>
-              {courses.map(course => {
-                const FlagSVG = COURSE_FLAGS[course.flag];
-                return <FlagSVG key={course.id} />;
-              })}
-            </Courses>
-            <p>
-              <span>E-mail: </span>
-              {email}
-            </p>
-            <p>
-              <span>Tel: </span>
-              {phone}
-            </p>
-          </li>
-        ))}
-      </List>
+      {isLoading ? (
+        <Loader size={48} style={{ height: '20vh' }} />
+      ) : (
+        <>
+          <List>
+            {students.map(
+              ({ first_name, last_name, email, phone, courses }) => (
+                <li key={email}>
+                  <p>
+                    {first_name} {last_name}
+                  </p>
+                  <Courses>
+                    {courses.map(course => {
+                      const FlagSVG = COURSE_FLAGS[course.flag];
+                      return <FlagSVG key={course.id} />;
+                    })}
+                  </Courses>
+                  <p>
+                    <span>E-mail: </span>
+                    {email}
+                  </p>
+                  <p>
+                    <span>Tel: </span>
+                    {phone}
+                  </p>
+                </li>
+              ),
+            )}
+          </List>
 
-      <Footer>
-        <p>Mostrando 1-10 de {paginationInfo.total}</p>
+          {paginationInfo === null || (
+            <Footer>
+              <p>Total de registros: {paginationInfo.total}</p>
 
-        <Pagination
-          totalPages={paginationInfo.last_page}
-          onPageChange={page => alert(`A página atual é ${page}`)}
-        />
-      </Footer>
+              <Pagination
+                currentPage={Number(paginationInfo.current_page)}
+                totalPages={paginationInfo.last_page}
+                onPageChange={handlePageChange}
+              />
+            </Footer>
+          )}
+        </>
+      )}
     </Container>
   );
 };

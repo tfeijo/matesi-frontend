@@ -8,6 +8,7 @@ import { Container } from './styles';
 const HIDDEN_PAGE = 'HIDDEN_PAGE';
 
 type Props = {
+  currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 };
@@ -28,13 +29,17 @@ const createRange = (from: number, to: number, step = 1) => {
   return range;
 };
 
-function Pagination({ totalPages, onPageChange }: Props) {
+function Pagination({
+  totalPages,
+  onPageChange,
+  currentPage: activePage,
+}: Props) {
   const {
     isPhoneOnly,
     isTabletPortraitUp,
     isTabletLandscapeUp,
   } = useBreakpoints();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(activePage);
   const [pageNeighbors, setPageNeighbors] = useState(0);
 
   useEffect(() => {
