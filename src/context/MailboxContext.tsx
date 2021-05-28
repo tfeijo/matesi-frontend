@@ -26,10 +26,13 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
   );
   const [selectedMessage, setSelectedMessage] = useState(-1);
   const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     async function loadData() {
-      const { data } = await api.get<TMailboxAPIResponse>(boxName);
+      const { data } = await api.get<TMailboxAPIResponse>(
+        `${boxName}?search=${search}`,
+      );
       const formattedData = dataFormatter(data);
 
       setPaginationInfo(formattedData.paginationInfo);
@@ -38,7 +41,7 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
     }
 
     loadData();
-  }, [boxName, dataFormatter]);
+  }, [boxName, dataFormatter, search]);
 
   if (isLoading)
     return <Loader size={48} style={{ width: '100%', height: '80vh' }} />;
@@ -176,7 +179,7 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
     if (page === lastPage) return;
 
     try {
-      const uri = `${boxName}?page=${page + 1}`;
+      const uri = `${boxName}?search=${search}&page=${page + 1}`;
       const { data } = await api.get<TMailboxAPIResponse>(uri);
 
       const formattedData = dataFormatter({
@@ -197,6 +200,10 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
     }
   };
 
+  const handleFilter = async (query: string) => {
+    setSearch(query);
+  };
+
   return (
     <MailboxContext.Provider
       value={{
@@ -214,6 +221,7 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
         toggleMessageAsDeleted,
         permanentDeleteMessage,
         handleLoadNextPage,
+        handleFilter,
       }}
     >
       {children}

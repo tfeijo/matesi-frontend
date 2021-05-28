@@ -73,4 +73,5 @@ export interface IMailboxContextData {
   toggleMessageAsDeleted: (id: string, index: number) => Promise<void>;
   permanentDeleteMessage: (id: string, index: number) => Promise<void>;
   handleLoadNextPage: () => Promise<void>;
+  handleFilter: (query: string) => void;
 }

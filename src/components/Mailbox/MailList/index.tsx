@@ -30,6 +30,7 @@ const MailList: React.FC = () => {
     toggleMessageAsDeleted,
     permanentDeleteMessage,
     handleLoadNextPage,
+    handleFilter,
   } = useMailbox();
   const searchFormRef = useRef<FormHandles>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -67,7 +68,7 @@ const MailList: React.FC = () => {
         <SearchForm
           isSearching={isSearching}
           ref={searchFormRef}
-          onSubmit={data => console.log(data)}
+          onSubmit={(data: { search: string }) => handleFilter(data.search)}
         >
           <Button
             type={isSearching ? 'reset' : 'button'}
