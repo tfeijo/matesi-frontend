@@ -10,9 +10,13 @@ import { TDataFormatterFunction } from '../../../../types/mailbox';
 import { MailboxProvider } from '../../../../context/MailboxContext';
 
 type TCourse = { id: string; name: string };
+type TProfile = { id: string; name: string };
 
 const EnrollMailbox: React.FC = () => {
   const [allCourses, setAllCourses] = useState<TCourse[]>([]);
+  const [studentProfile, setStudentProfile] = useState<TProfile>(
+    {} as TProfile,
+  );
 
   useEffect(() => {
     async function loadCourses() {
@@ -20,8 +24,18 @@ const EnrollMailbox: React.FC = () => {
       setAllCourses(data);
     }
 
+    async function loadProfile() {
+      const { data } = await api.get<TProfile[]>('profiles');
+
+      const onlyStudentProfile = data.filter(
+        profile => profile.name === 'student',
+      );
+      setStudentProfile({ ...onlyStudentProfile[0] });
+    }
+
     try {
       loadCourses();
+      loadProfile();
     } catch (error) {
       toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
     }
@@ -65,9 +79,12 @@ const EnrollMailbox: React.FC = () => {
       <div>
         <MailList />
         <MailDetail>
-          {/* {allCourses.length > 0 && (
-            <ConfirmationForm allCourses={allCourses} />
-          )} */}
+          {allCourses.length > 0 && (
+            <ConfirmationForm
+              allCourses={allCourses}
+              studentProfile={studentProfile}
+            />
+          )}
         </MailDetail>
       </div>
     </MailboxProvider>

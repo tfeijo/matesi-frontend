@@ -21,9 +21,36 @@ export const ConfirmMessageContainer = styled.div`
     margin: 2.4rem 0;
   }
 
-  form button {
-    margin-top: 4rem;
-    display: flex;
-    margin-left: auto;
+  form {
+    input[type='date'] {
+      resize: none;
+    }
+
+    .date-picker {
+      margin-top: 1.6rem;
+    }
+
+    > button {
+      margin-top: 4rem;
+      display: flex;
+      margin-left: auto;
+    }
+  }
+
+  .course-selection {
+    margin-bottom: 2.4rem;
+
+    h2 {
+      font: var(--font-body);
+      color: var(--color-label);
+      text-align: center;
+    }
+
+    span.courses-error {
+      display: inline-block;
+      margin-top: 1.6rem;
+      font: var(--font-body-small);
+      color: var(--color-danger-default);
+    }
   }
 `;
