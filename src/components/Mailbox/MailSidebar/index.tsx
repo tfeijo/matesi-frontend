@@ -34,7 +34,7 @@ const MailSidebar: React.FC = () => {
       'aside nav [aria-current]',
     );
 
-    if (newActiveTab) setActiveTab(newActiveTab.text);
+    if (newActiveTab) setActiveTab(newActiveTab.text.replace(/\d+/g, ''));
 
     async function loadUnread() {
       const { data: enroll } = await api.get('registrations/unread');

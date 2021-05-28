@@ -40,7 +40,8 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
     loadData();
   }, [boxName, dataFormatter]);
 
-  if (isLoading) return <Loader size={48} />;
+  if (isLoading)
+    return <Loader size={48} style={{ width: '100%', height: '80vh' }} />;
 
   const selectMessage = (index: number) => {
     setSelectedMessage(index);

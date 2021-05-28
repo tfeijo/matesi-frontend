@@ -84,8 +84,24 @@ export const Actions = styled.div`
   .buttons {
     margin-top: 3.2rem;
 
-    button + button {
-      margin-left: 1.6rem;
+    display: grid;
+    grid-auto-flow: row;
+    grid-gap: 1.6rem;
+
+    ${mediaQuery.custom(450)} {
+      grid-auto-flow: column;
+      justify-content: start;
     }
   }
+`;
+
+export const UserAlreadyRegisteredContainer = styled.p`
+  margin-top: 6.4rem;
+  padding: 3.2rem;
+  border-radius: var(--radius-medium);
+  border: 0.1rem solid var(--color-success-default);
+  color: var(--color-success-default);
+  background-color: var(--color-success-lightest);
+  font: var(--font-heading-x-small);
+  text-align: center;
 `;

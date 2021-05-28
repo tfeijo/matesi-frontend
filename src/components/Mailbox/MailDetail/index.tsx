@@ -13,7 +13,14 @@ import { FormHandles, SubmitHandler } from '@unform/core';
 import Link from '../../Link';
 import Button from '../../Button';
 
-import { Container, BackButton, Main, Message, Actions } from './styles';
+import {
+  Container,
+  BackButton,
+  Main,
+  Message,
+  Actions,
+  UserAlreadyRegisteredContainer,
+} from './styles';
 import Checkbox from '../../Checkbox';
 import { useMailbox } from '../../../context/MailboxContext';
 
@@ -95,7 +102,7 @@ const MailDetail: React.FC = ({ children }) => {
               >
                 <Checkbox
                   key={Math.random()}
-                  label="Contacted"
+                  label="Contato realizado"
                   name="contacted"
                   onChange={() => formRef.current?.submitForm()}
                 />
@@ -133,6 +140,12 @@ const MailDetail: React.FC = ({ children }) => {
                 )}
               </div>
             </Actions>
+
+            {message.isConfirmed && (
+              <UserAlreadyRegisteredContainer>
+                Usuário matriculado
+              </UserAlreadyRegisteredContainer>
+            )}
 
             {children}
           </Main>
