@@ -143,6 +143,10 @@ const MailboxProvider: React.FC<IMailboxProviderProps> = ({
         setSelectedMessage(selectedMessage - 1);
 
       setMessages(updatedMessages);
+      setPaginationInfo({
+        ...paginationInfo,
+        totalRegisters: paginationInfo.totalRegisters - 1,
+      });
     } catch (error) {
       console.log(error);
     }
