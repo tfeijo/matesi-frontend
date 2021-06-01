@@ -71,7 +71,7 @@ const MailList: React.FC = () => {
           onSubmit={(data: { search: string }) => handleFilter(data.search)}
         >
           <Button
-            type={isSearching ? 'reset' : 'button'}
+            type="button"
             iconOnly
             icon={isSearching ? MdChevronLeft : MdSearch}
             color="neutral"
@@ -79,23 +79,17 @@ const MailList: React.FC = () => {
             onClick={toggleSearch}
           />
 
-          {isSearching && (
-            <div>
-              <Input
-                name="search"
-                placeholder="Pesquisar"
-                style={isSearching ? {} : { opacity: 0 }}
-              />
+          <div className="field">
+            <Input name="search" placeholder="Pesquisar" />
 
-              <Button
-                type="submit"
-                iconOnly
-                icon={MdSearch}
-                color="neutral"
-                variant="ghost"
-              />
-            </div>
-          )}
+            <Button
+              type="submit"
+              iconOnly
+              icon={MdSearch}
+              color="neutral"
+              variant="ghost"
+            />
+          </div>
         </SearchForm>
       </Header>
 

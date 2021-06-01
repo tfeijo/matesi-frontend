@@ -35,7 +35,8 @@ export const SearchForm = styled(Form) <SearchProps>`
 
     width: ${isSearching ? '100%' : '4.4rem'};
 
-    > div {
+    > div.field {
+      display: ${isSearching ? 'initial' : 'none'};
       position: relative;
       flex: 1;
       margin-left: 1.6rem;
