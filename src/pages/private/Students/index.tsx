@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MdImportExport, MdSearch } from 'react-icons/md';
+import { MdSearch } from 'react-icons/md';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
@@ -168,10 +168,11 @@ const Students: React.FC = () => {
     loadStudents();
   }, [filters]);
 
-  function handleFilterByCourse(id: string) {
+  function handleFilterByCourse(id?: string) {
+    if (id === filters.course) return;
     setFilters({
       ...filters,
-      course: id,
+      course: id || '',
     });
   }
 
@@ -182,7 +183,8 @@ const Students: React.FC = () => {
     });
   }
 
-  function handleOrderBy(field: 'first_name' | 'email' | 'phone') {
+  function handleOrderBy(field: 'first_name' | 'email' | 'phone' | '') {
+    if (field === filters.orderBy) return;
     setFilters({
       ...filters,
       orderBy: field,
@@ -192,6 +194,32 @@ const Students: React.FC = () => {
   function handlePageChange(page: number) {
     loadStudents(page);
   }
+
+  const { orderBy, course: courseFiltering } = filters;
+
+  let orderByDropdownTitle;
+  switch (orderBy) {
+    case 'first_name':
+      orderByDropdownTitle = 'Nome';
+      break;
+
+    case 'email':
+      orderByDropdownTitle = 'E-mail';
+      break;
+
+    case 'phone':
+      orderByDropdownTitle = 'Telefone';
+      break;
+
+    default:
+      orderByDropdownTitle = 'Ordenar';
+      break;
+  }
+
+  let courseFilterDropdownTitle = 'Idioma';
+  allCourses.forEach(course => {
+    if (course.id === courseFiltering) courseFilterDropdownTitle = course.name;
+  });
 
   if (students === null) return <Loader size={48} style={{ height: '80vh' }} />;
 
@@ -203,7 +231,15 @@ const Students: React.FC = () => {
 
           <Filters>
             <div className="buttons">
-              <Dropdown className="dropdown" triggerTitle="Ordenar">
+              <Dropdown
+                className="dropdown"
+                triggerTitle={orderByDropdownTitle}
+              >
+                <Dropdown.Item>
+                  <button type="button" onClick={() => handleOrderBy('')}>
+                    Limpar
+                  </button>
+                </Dropdown.Item>
                 <Dropdown.Item>
                   <button
                     type="button"
@@ -225,7 +261,10 @@ const Students: React.FC = () => {
               </Dropdown>
 
               {allCourses.length > 0 && (
-                <Dropdown className="dropdown" triggerTitle="Idioma">
+                <Dropdown
+                  className="dropdown"
+                  triggerTitle={courseFilterDropdownTitle}
+                >
                   <Dropdown.Item>
                     <button
                       type="button"
