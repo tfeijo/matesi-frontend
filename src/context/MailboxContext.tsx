@@ -1,55 +1,50 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import Loader from '../components/Loader';
 import api from '../services/api';
+import {
+  IMailboxContextData,
+  IMailboxProviderProps,
+  TMailboxAPIResponse,
+  TMessage,
+  TPaginationInfo,
+} from '../types/mailbox';
 
-type TCourse = { id: string; name: string };
+const MailboxContext = createContext<IMailboxContextData>(
+  {} as IMailboxContextData,
+);
 
-type BoxName =
-  | 'registrations'
-  | 'questions'
-  | 'work_with_us'
-  | 'archives'
-  | 'deletes';
-
-export type TMessage = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  subject?: string;
-  message?: string;
-  linkedin?: string;
-  contacted: boolean;
-  read: boolean;
-  courses?: Array<TCourse>;
-  originBox?: 'registrations' | 'questions' | 'work_with_us';
-};
-
-type TProps = { messages: Array<TMessage>; boxName?: BoxName };
-
-type TMailboxContent = {
-  messages: Array<TMessage>;
-  boxName?: BoxName;
-  setActiveMessageState: (updatedMessage: TMessage) => void;
-  selectedMessage: number;
-  selectMessage: (index: number) => void;
-  isMessageOpen: boolean;
-  toggleMessage: (open?: boolean) => void;
-  setMessageAsRead: (index: number) => Promise<void>;
-  toggleMessageAsContacted: (contacted: boolean) => Promise<void>;
-  toggleMessageAsArchived: (id: string, index: number) => Promise<void>;
-  toggleMessageAsDeleted: (id: string, index: number) => Promise<void>;
-};
-
-const MailboxContext = createContext<TMailboxContent>({} as TMailboxContent);
-
-const MailboxProvider: React.FC<TProps> = ({
-  messages: initialMessages,
+const MailboxProvider: React.FC<IMailboxProviderProps> = ({
   boxName,
+  dataFormatter,
   children,
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [messages, setMessages] = useState<TMessage[]>([]);
+  const [paginationInfo, setPaginationInfo] = useState<TPaginationInfo>(
+    {} as TPaginationInfo,
+  );
   const [selectedMessage, setSelectedMessage] = useState(-1);
-  const [messages, setMessages] = useState(initialMessages);
   const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    async function loadData() {
+      const { data } = await api.get<TMailboxAPIResponse>(
+        `${boxName}?search=${search}`,
+      );
+      const formattedData = dataFormatter(data);
+
+      setPaginationInfo(formattedData.paginationInfo);
+      setMessages(formattedData.messages);
+      setIsLoading(false);
+    }
+
+    loadData();
+  }, [boxName, dataFormatter, search]);
+
+  if (isLoading)
+    return <Loader size={48} style={{ width: '100%', height: '80vh' }} />;
 
   const selectMessage = (index: number) => {
     setSelectedMessage(index);
@@ -71,18 +66,17 @@ const MailboxProvider: React.FC<TProps> = ({
 
   const setMessageAsRead = async (messageToRead: number) => {
     try {
-      const { id, read } = messages[messageToRead];
+      const { id, isRead, type } = messages[messageToRead];
 
-      if (!boxName) return;
-      if (read) return;
+      if (isRead) return;
 
-      await api.put(`${boxName}/read/${id}`);
+      await api.put(`${type || boxName}/read/${id}`);
 
       const updatedMessages = messages.map((message, index) => {
         if (messageToRead === index)
           return {
             ...message,
-            read: true,
+            isRead: true,
           };
         return message;
       });
@@ -95,26 +89,27 @@ const MailboxProvider: React.FC<TProps> = ({
 
   const toggleMessageAsContacted = async (contacted: boolean) => {
     try {
-      if (!boxName) return;
+      const { id, type } = messages[selectedMessage];
 
-      const { id } = messages[selectedMessage];
-      await api.put(`${boxName}/contact/${id}`);
+      await api.put(`${type || boxName}/contact/${id}`);
 
       setActiveMessageState({
         ...messages[selectedMessage],
-        contacted,
+        isContact: contacted,
       });
     } catch (error) {
+      toast.error(
+        'Um erro ocorreu ao marcar a mensagem como contactada. Por favor, tente novamente',
+      );
       console.log(error);
     }
   };
 
   const toggleMessageAsArchived = async (id: string, indexToDelete: number) => {
     try {
-      if (!boxName) return;
-      const { originBox } = messages[indexToDelete];
+      const { type } = messages[indexToDelete];
 
-      await api.put(`${originBox || boxName}/archive/${id}`);
+      await api.put(`${type || boxName}/archive/${id}`);
 
       const updatedMessages = messages.filter(message => message.id !== id);
 
@@ -123,17 +118,23 @@ const MailboxProvider: React.FC<TProps> = ({
         setSelectedMessage(selectedMessage - 1);
 
       setMessages(updatedMessages);
+      setPaginationInfo({
+        ...paginationInfo,
+        totalRegisters: paginationInfo.totalRegisters - 1,
+      });
     } catch (error) {
+      toast.error(
+        'Um erro ocorreu ao arquivar a mensagem. Por favor, tente novamente',
+      );
       console.log(error);
     }
   };
 
   const toggleMessageAsDeleted = async (id: string, indexToDelete: number) => {
     try {
-      if (!boxName) return;
-      const { originBox } = messages[indexToDelete];
+      const { type } = messages[indexToDelete];
 
-      await api.put(`${originBox || boxName}/soft_delete/${id}`);
+      await api.put(`${type || boxName}/soft_delete/${id}`);
 
       const updatedMessages = messages.filter(message => message.id !== id);
 
@@ -142,9 +143,69 @@ const MailboxProvider: React.FC<TProps> = ({
         setSelectedMessage(selectedMessage - 1);
 
       setMessages(updatedMessages);
+      setPaginationInfo({
+        ...paginationInfo,
+        totalRegisters: paginationInfo.totalRegisters - 1,
+      });
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const permanentDeleteMessage = async (id: string, indexToDelete: number) => {
+    try {
+      const { type } = messages[indexToDelete];
+
+      await api.delete(`${type || boxName}/delete/${id}`);
+
+      const updatedMessages = messages.filter(message => message.id !== id);
+
+      if (selectedMessage === indexToDelete) setSelectedMessage(-1);
+      else if (indexToDelete < selectedMessage)
+        setSelectedMessage(selectedMessage - 1);
+
+      setMessages(updatedMessages);
+      setPaginationInfo({
+        ...paginationInfo,
+        totalRegisters: paginationInfo.totalRegisters - 1,
+      });
+    } catch (error) {
+      toast.error(
+        'Um erro ocorreu ao excluir a mensagem. Por favor, tente novamente',
+      );
+      console.log(error);
+    }
+  };
+
+  const handleLoadNextPage = async () => {
+    const { page, lastPage } = paginationInfo;
+
+    if (page === lastPage) return;
+
+    try {
+      const uri = `${boxName}?search=${search}&page=${page + 1}`;
+      const { data } = await api.get<TMailboxAPIResponse>(uri);
+
+      const formattedData = dataFormatter({
+        ...data,
+        page: Number(data.page),
+      });
+
+      setPaginationInfo({
+        ...paginationInfo,
+        page: formattedData.paginationInfo.page,
+      });
+      setMessages([...messages, ...formattedData.messages]);
+    } catch (error) {
+      toast.error(
+        'Um erro ocorreu ao carregar as mensagens. Por favor, tente novamente',
+      );
+      console.log(error);
+    }
+  };
+
+  const handleFilter = async (query: string) => {
+    setSearch(query);
   };
 
   return (
@@ -152,6 +213,7 @@ const MailboxProvider: React.FC<TProps> = ({
       value={{
         messages,
         boxName,
+        paginationInfo,
         setActiveMessageState,
         selectedMessage,
         selectMessage,
@@ -161,6 +223,9 @@ const MailboxProvider: React.FC<TProps> = ({
         toggleMessageAsContacted,
         toggleMessageAsArchived,
         toggleMessageAsDeleted,
+        permanentDeleteMessage,
+        handleLoadNextPage,
+        handleFilter,
       }}
     >
       {children}
@@ -168,4 +233,13 @@ const MailboxProvider: React.FC<TProps> = ({
   );
 };
 
-export { MailboxContext, MailboxProvider };
+function useMailbox() {
+  const context = useContext(MailboxContext);
+
+  if (!context)
+    throw new Error('useMailbox must be used within a MailboxProvider');
+
+  return context;
+}
+
+export { MailboxProvider, useMailbox };

@@ -1,83 +1,63 @@
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import Loader from '../../../../components/Loader';
 import MailDetail from '../../../../components/Mailbox/MailDetail';
 import MailList from '../../../../components/Mailbox/MailList';
 import { MailboxProvider } from '../../../../context/MailboxContext';
-import api from '../../../../services/api';
-
-type TCourse = { id: string; name: string };
-
-interface Message {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  subject?: string;
-  linkedin?: string;
-  message?: string;
-  read: boolean;
-  contacted: boolean;
-  courses?: Array<TCourse>;
-}
-
-type MessageResponse = Omit<Message, 'read' | 'contacted'> & {
-  isRead: boolean;
-  isContact: boolean;
-  about_me?: string;
-};
+import {
+  EMessageType,
+  TDataFormatterFunction,
+} from '../../../../types/mailbox';
 
 const Deleted: React.FC = () => {
-  const [messages, setMessages] = useState<Message[] | null>(null);
+  const handleFormatData: TDataFormatterFunction = ({
+    data,
+    last_page,
+    page,
+    total,
+  }) => {
+    const messages = data.map(
+      ({ first_name, last_name, about_me, message, courses, ...rest }) => {
+        const sharedData = {
+          firstName: first_name,
+          lastName: last_name,
+          ...rest,
+        };
 
-  useEffect(() => {
-    async function loadMessages() {
-      const { data } = await api.get<MessageResponse[]>('deletes');
+        if (courses) {
+          const coursesRegistered = courses
+            .map(course => course.name)
+            .join(', ')
+            .trimEnd();
 
-      const formattedData = data.map(
-        ({ isContact, isRead, courses, about_me, message, ...rest }) => {
-          const sharedData = {
-            read: isRead,
-            contacted: isContact,
-            ...rest,
-          };
-
-          if (courses) {
-            const coursesRegistered = courses
-              .map(course => course.name)
-              .join(', ')
-              .trimEnd();
-
-            return {
-              subject: `Pré-matricula para o(s) curso(s): ${coursesRegistered}.`,
-              courses,
-              originBox: 'registrations',
-              ...sharedData,
-            };
-          }
+          const s = courses!.length > 1 ? 's' : '';
 
           return {
             ...sharedData,
-            message: about_me || message,
-            originBox: about_me ? 'work_with_us' : 'questions',
+            subject: `Pré-matricula para o${s} curso${s}: ${coursesRegistered}.`,
+            courses,
+            type: EMessageType.registrations,
+            ...rest,
           };
-        },
-      );
+        }
 
-      setMessages(formattedData);
-    }
+        return {
+          ...sharedData,
+          message: about_me || message,
+          type: about_me ? EMessageType.work_with_us : EMessageType.questions,
+        };
+      },
+    );
 
-    try {
-      loadMessages();
-    } catch (error) {
-      toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
-    }
-  }, []);
-
-  if (messages === null) return <Loader size={48} />;
+    return {
+      messages,
+      paginationInfo: {
+        lastPage: last_page,
+        page,
+        totalRegisters: total,
+      },
+    };
+  };
 
   return (
-    <MailboxProvider messages={messages} boxName="deletes">
+    <MailboxProvider boxName="deletes" dataFormatter={handleFormatData}>
       <div>
         <MailList />
         <MailDetail />

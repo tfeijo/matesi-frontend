@@ -26,9 +26,11 @@ const COURSE_FLAG = {
   german: GermanyFlag,
 };
 
-function FlagCheckbox({ name, label, course, ...rest }: InputProps) {
+function FlagCheckbox({ name, label, course, value, ...rest }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { fieldName, defaultValue, registerField } = useField(name);
+
+  const defaultChecked = defaultValue === value;
 
   const FlagSVG = COURSE_FLAG[course];
 
@@ -41,19 +43,20 @@ function FlagCheckbox({ name, label, course, ...rest }: InputProps) {
         return '';
       },
       clearValue: ref => {
-        ref.current.checked = defaultValue;
+        ref.current.checked = defaultChecked;
       },
       setValue: ref => {
         ref.current.checked = !ref.current.checked;
       },
     });
-  }, [defaultValue, fieldName, registerField]);
+  }, [defaultChecked, defaultValue, fieldName, registerField]);
 
   return (
     <Label>
       <input
         type="checkbox"
-        defaultChecked={defaultValue}
+        defaultChecked={defaultChecked}
+        value={value}
         ref={inputRef}
         id={fieldName}
         {...rest}

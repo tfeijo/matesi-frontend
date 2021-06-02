@@ -35,7 +35,8 @@ export const SearchForm = styled(Form) <SearchProps>`
 
     width: ${isSearching ? '100%' : '4.4rem'};
 
-    > div {
+    > div.field {
+      display: ${isSearching ? 'initial' : 'none'};
       position: relative;
       flex: 1;
       margin-left: 1.6rem;
@@ -100,10 +101,18 @@ export const ListItem = styled.li<ListItemProps>`
 
     span:last-of-type {
       font: var(--font-body-small);
-      color: var(--color-label);
+      color: var(--color-body);
     }
   }
 
+  small {
+    font: var(--font-body-small);
+    display: block;
+    color: var(--color-label);
+    text-transform: capitalize;
+  }
+
+  small,
   p {
     margin-top: 0.8rem;
   }
@@ -160,4 +169,9 @@ export const ListItem = styled.li<ListItemProps>`
       }
     }
   }
+`;
+
+export const LoadMore = styled.div`
+  margin: 3.2rem 0 4.8rem;
+  text-align: center;
 `;

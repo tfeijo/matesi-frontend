@@ -1,82 +1,89 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import Loader from '../../../../components/Loader';
 import MailDetail from '../../../../components/Mailbox/MailDetail';
 import MailList from '../../../../components/Mailbox/MailList';
-import { MailboxProvider } from '../../../../context/MailboxContext';
 import { ConfirmationForm } from './ConfirmationForm';
 
 import api from '../../../../services/api';
+import { TDataFormatterFunction } from '../../../../types/mailbox';
+import { MailboxProvider } from '../../../../context/MailboxContext';
 
 type TCourse = { id: string; name: string };
-
-interface Message {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  read: boolean;
-  contacted: boolean;
-  courses: Array<TCourse>;
-}
-
-type MessageResponse = Omit<Message, 'read' | 'contacted' | 'subject'> & {
-  isRead: boolean;
-  isContact: boolean;
-};
+type TProfile = { id: string; name: string };
 
 const EnrollMailbox: React.FC = () => {
-  const [messages, setMessages] = useState<Message[] | null>(null);
   const [allCourses, setAllCourses] = useState<TCourse[]>([]);
+  const [studentProfile, setStudentProfile] = useState<TProfile>(
+    {} as TProfile,
+  );
 
   useEffect(() => {
-    async function loadMessages() {
-      const { data } = await api.get<MessageResponse[]>('registrations');
-
-      const formattedData = data.map(
-        ({ isContact, isRead, courses, ...rest }) => {
-          const coursesRegistered = courses
-            .map(course => course.name)
-            .join(', ')
-            .trimEnd();
-
-          return {
-            read: isRead,
-            contacted: isContact,
-            subject: `Pré-matricula para o(s) curso(s): ${coursesRegistered}.`,
-            courses,
-            ...rest,
-          };
-        },
-      );
-
-      setMessages(formattedData);
-    }
-
     async function loadCourses() {
       const { data } = await api.get('courses');
       setAllCourses(data);
     }
 
+    async function loadProfile() {
+      const { data } = await api.get<TProfile[]>('profiles');
+
+      const onlyStudentProfile = data.filter(
+        profile => profile.name === 'student',
+      );
+      setStudentProfile({ ...onlyStudentProfile[0] });
+    }
+
     try {
-      loadMessages();
       loadCourses();
+      loadProfile();
     } catch (error) {
       toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
     }
   }, []);
 
-  if (messages === null) return <Loader size={48} />;
+  const handleFormatData: TDataFormatterFunction = ({
+    data,
+    last_page,
+    page,
+    total,
+  }) => {
+    const messages = data.map(({ first_name, last_name, courses, ...rest }) => {
+      const coursesRegistered = courses
+        ?.map(course => course.name)
+        .join(', ')
+        .trimEnd();
+
+      const s = courses!.length > 1 ? 's' : '';
+
+      return {
+        firstName: first_name,
+        lastName: last_name,
+        subject: `Pré-matricula para o${s} curso${s}: ${coursesRegistered}.`,
+        courses,
+        ...rest,
+      };
+    });
+
+    return {
+      messages,
+      paginationInfo: {
+        lastPage: last_page,
+        page,
+        totalRegisters: total,
+      },
+    };
+  };
 
   return (
-    <MailboxProvider messages={messages} boxName="registrations">
+    <MailboxProvider boxName="registrations" dataFormatter={handleFormatData}>
       <div>
         <MailList />
         <MailDetail>
           {allCourses.length > 0 && (
-            <ConfirmationForm allCourses={allCourses} />
+            <ConfirmationForm
+              allCourses={allCourses}
+              studentProfile={studentProfile}
+            />
           )}
         </MailDetail>
       </div>
