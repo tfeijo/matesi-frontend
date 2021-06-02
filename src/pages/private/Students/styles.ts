@@ -47,31 +47,6 @@ export const Header = styled.header`
       grid-gap: var(--grid-gap-table-style);
       justify-items: start;
 
-      button {
-        display: flex;
-        align-items: center;
-
-        padding: 0;
-        border: 0;
-        background: transparent;
-        transition: opacity 0.15s ease-in-out;
-
-        &:hover {
-          opacity: 0.6;
-        }
-
-        &:focus,
-        &:active {
-          outline: 0.3rem solid var(--color-placeholder);
-        }
-
-        svg {
-          margin-left: 0.4rem;
-          color: var(--color-label);
-        }
-      }
-
-      button,
       p {
         font: var(--font-body-normal-heavy);
         color: var(--color-title-active);
