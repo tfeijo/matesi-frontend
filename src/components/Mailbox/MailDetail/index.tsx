@@ -50,6 +50,7 @@ const MailDetail: React.FC = ({ children }) => {
   }
 
   function handleDeleteMessage() {
+    toggleMessage(false);
     toggleMessageAsDeleted(message.id, selectedMessage);
   }
 
@@ -81,6 +82,16 @@ const MailDetail: React.FC = ({ children }) => {
                 <span>
                   {message.email} - {message.phone}
                 </span>
+
+                <small>
+                  {Intl.DateTimeFormat('pt-BR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'short',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  }).format(new Date(message.created_at))}
+                </small>
               </div>
 
               {message.message && <p className="message">{message.message}</p>}

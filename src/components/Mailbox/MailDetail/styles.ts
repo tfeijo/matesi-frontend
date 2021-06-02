@@ -61,9 +61,20 @@ export const Message = styled.div`
       margin-bottom: 0.8rem;
     }
 
-    span {
+    span, small {
       font: var(--font-body-normal);
+    }
+
+    span {
+      color: var(--color-body);
+
+    }
+
+    small {
       color: var(--color-label);
+      display: block;
+      margin-top: 0.8rem;
+      text-transform: capitalize;
     }
   }
 

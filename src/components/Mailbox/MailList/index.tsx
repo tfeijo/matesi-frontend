@@ -96,7 +96,16 @@ const MailList: React.FC = () => {
       <ul>
         {messages.map(
           (
-            { id, firstName, lastName, email, subject, linkedin, isRead },
+            {
+              id,
+              firstName,
+              lastName,
+              email,
+              subject,
+              linkedin,
+              isRead,
+              created_at,
+            },
             index,
           ) => (
             <ListItem
@@ -111,6 +120,16 @@ const MailList: React.FC = () => {
                   </span>
                   <span>({email})</span>
                 </h4>
+
+                <small>
+                  {Intl.DateTimeFormat('pt-BR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'short',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  }).format(new Date(created_at))}
+                </small>
 
                 {subject && <p>{subject}</p>}
 

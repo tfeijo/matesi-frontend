@@ -101,10 +101,18 @@ export const ListItem = styled.li<ListItemProps>`
 
     span:last-of-type {
       font: var(--font-body-small);
-      color: var(--color-label);
+      color: var(--color-body);
     }
   }
 
+  small {
+    font: var(--font-body-small);
+    display: block;
+    color: var(--color-label);
+    text-transform: capitalize;
+  }
+
+  small,
   p {
     margin-top: 0.8rem;
   }

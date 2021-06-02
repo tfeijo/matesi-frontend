@@ -25,6 +25,7 @@ export type TMessage = {
   isConfirmed?: boolean;
   courses?: Array<TCourse>;
   type?: TMessageType;
+  created_at: string;
 };
 
 export type TPaginationInfo = {
