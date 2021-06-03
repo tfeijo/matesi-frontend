@@ -18,6 +18,24 @@ export const Container = styled.section`
   }
 `;
 
+export const ModalTrigger = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.6rem;
+
+  button {
+    width: 100%;
+
+    ${mediaQuery.tabletPortraitUp} {
+      width: 50%;
+    }
+
+    ${mediaQuery.tabletLandscapeUp} {
+      width: unset;
+    }
+  }
+`;
+
 export const Header = styled.header`
   background-color: var(--color-off-white);
   border-radius: var(--radius-x-large);

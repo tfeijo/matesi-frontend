@@ -13,11 +13,20 @@ import { ReactComponent as GermanyFlag } from '../../../assets/flags/germany-squ
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 
-import { Container, Header, Filters, List, Courses, Footer } from './styles';
+import {
+  Container,
+  ModalTrigger,
+  Header,
+  Filters,
+  List,
+  Courses,
+  Footer,
+} from './styles';
 import Pagination from '../../../components/Pagination';
 import Dropdown from '../../../components/Dropdown';
 import api from '../../../services/api';
 import Loader from '../../../components/Loader';
+import RegisterModal from './RegisterModal';
 
 const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   english: UsaFlag,
@@ -27,10 +36,8 @@ const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   german: GermanyFlag,
 };
 
-type Course = {
-  id: string;
-  name: string;
-};
+type Course = { id: string; name: string };
+type TProfile = { id: string; name: string };
 
 type CourseWithFlag = Course & { flag: string };
 
@@ -63,6 +70,9 @@ type Filters = {
 const Students: React.FC = () => {
   const [students, setStudents] = useState<Student[] | null>(null);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [studentProfile, setStudentProfile] = useState<TProfile>(
+    {} as TProfile,
+  );
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(
     null,
   );
@@ -72,6 +82,7 @@ const Students: React.FC = () => {
     search: '',
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   function formatStudents(users: StudentsWithoutFlag[]) {
     return users.map(user => {
@@ -129,7 +140,16 @@ const Students: React.FC = () => {
         console.log(error);
       }
     }
+    async function loadProfiles() {
+      const { data } = await api.get<TProfile[]>('profiles');
+
+      const onlyStudentProfile = data.filter(
+        profile => profile.name === 'student',
+      );
+      setStudentProfile({ ...onlyStudentProfile[0] });
+    }
     loadCourses();
+    loadProfiles();
   }, []);
 
   async function loadStudents(page = 1) {
@@ -167,6 +187,14 @@ const Students: React.FC = () => {
   useEffect(() => {
     loadStudents();
   }, [filters]);
+
+  function handleOpenRegisterModal() {
+    setIsRegisterModalOpen(true);
+  }
+
+  function handleCloseRegisterModal() {
+    setIsRegisterModalOpen(false);
+  }
 
   function handleFilterByCourse(id?: string) {
     if (id === filters.course) return;
@@ -225,6 +253,23 @@ const Students: React.FC = () => {
 
   return (
     <Container>
+      <ModalTrigger>
+        <Button
+          color="secondary"
+          variant="outline"
+          onClick={() => handleOpenRegisterModal()}
+        >
+          Matricular aluno
+        </Button>
+        {studentProfile && (
+          <RegisterModal
+            isOpen={isRegisterModalOpen}
+            onRequestClose={handleCloseRegisterModal}
+            courses={allCourses}
+            studentProfile={studentProfile}
+          />
+        )}
+      </ModalTrigger>
       <Header>
         <div className="top-content">
           <h2>Alunos matrículados</h2>
