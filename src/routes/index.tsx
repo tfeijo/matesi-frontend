@@ -38,7 +38,7 @@ const Routes = () => (
     <Route path="/entrar" component={Login} />
 
     <Route path="/mensagens" component={Mailbox} isAdmin />
-    <Route path="/alunos" component={Students} isAdmin />
+    <Route path="/matriculados" component={Students} isAdmin />
 
     <Route component={() => <Redirect to="/" />} />
   </Switch>

@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
           <ul className="main_nav">
             <li>
               <NavDropdown
-                title="cursos"
+                title="Cursos"
                 links={[
                   { to: '/cursos/ingles', title: 'Inglês' },
                   { to: '/cursos/espanhol', title: 'Espanhol' },
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
                   title="Portal"
                   links={[
                     { to: '/mensagens/matricular', title: 'Mensagens' },
-                    { to: '/alunos', title: 'Alunos' },
+                    { to: '/matriculados', title: 'Matriculados' },
                     {
                       to: '/sair',
                       title: 'Sair',
