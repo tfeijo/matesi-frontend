@@ -59,4 +59,28 @@ export default createGlobalStyle`
     }
 
   }
+
+  .ReactModal {
+    &__Overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-dark-transparent-40);
+      z-index: 1100;
+
+      overflow-y: auto;
+
+      display: grid;
+      place-items: center;
+      padding-top: 4.8rem
+    }
+
+    &__Body {
+      &--open {
+        overflow: hidden;
+      }
+    }
+  }
 `;
