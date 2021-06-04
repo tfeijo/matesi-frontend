@@ -9,15 +9,19 @@ type MemberProps = {
 
 /* STYLES */
 export const Container = styled.main`
-  ${container}
   padding-top: 4.8rem;
 
   ${mediaQuery.tabletPortraitUp} {
     padding-top: 8rem;
   }
+
+  .hide {
+    display: none;
+  }
 `;
 
 export const Hero = styled.section`
+  ${container}
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -212,9 +216,10 @@ export const Member = styled.div<MemberProps>`
 
       .animate-job {
         --job-transition: 1s cubic-bezier(0.05, 0.53, 0.52, 0.97);
+        --job-transition-slower: 1.5s cubic-bezier(0.05, 0.53, 0.52, 0.97);
         --job-delay: 300ms;
 
-        --job-showing: max-width var(--job-transition),
+        --job-showing: max-width var(--job-transition-slower),
           max-height var(--job-transition) var(--job-delay);
 
         --job-hiding: max-width var(--job-transition) var(--job-delay),
