@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   RiCloseLine,
   RiDeleteBin2Line,
@@ -23,9 +23,22 @@ import {
 } from './styles';
 import Checkbox from '../../Checkbox';
 import { useMailbox } from '../../../context/MailboxContext';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 const MailDetail: React.FC = ({ children }) => {
   const formRef = useRef<FormHandles>(null);
+  const [
+    isConfirmPermanentDeleteModalOpen,
+    setIsConfirmPermanentDeleteModalOpen,
+  ] = useState(false);
+
+  function openConfirmPermanentDeleteModal() {
+    setIsConfirmPermanentDeleteModalOpen(true);
+  }
+
+  function closeConfirmPermanentDeleteModal() {
+    setIsConfirmPermanentDeleteModalOpen(false);
+  }
 
   const {
     messages,
@@ -139,15 +152,23 @@ const MailDetail: React.FC = ({ children }) => {
                   {boxName === 'deletes' ? 'Restaurar' : 'Excluir'}
                 </Button>
                 {boxName === 'deletes' && (
-                  <Button
-                    icon={RiDeleteBin2Line}
-                    color="danger"
-                    variant="outline"
-                    size="small"
-                    onClick={handlePermanentDeleteMessage}
-                  >
-                    Excluir
-                  </Button>
+                  <>
+                    <Button
+                      icon={RiDeleteBin2Line}
+                      color="danger"
+                      variant="outline"
+                      size="small"
+                      onClick={openConfirmPermanentDeleteModal}
+                    >
+                      Excluir
+                    </Button>
+
+                    <ConfirmDeleteModal
+                      isOpen={isConfirmPermanentDeleteModalOpen}
+                      onRequestClose={closeConfirmPermanentDeleteModal}
+                      deleteFunction={handlePermanentDeleteMessage}
+                    />
+                  </>
                 )}
               </div>
             </Actions>

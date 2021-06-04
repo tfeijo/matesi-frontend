@@ -3,7 +3,6 @@ import { FormHandles } from '@unform/core';
 import { MdChevronLeft, MdSearch, MdUndo } from 'react-icons/md';
 import {
   RiCloseLine,
-  RiDeleteBin2Line,
   RiInboxArchiveLine,
   RiInboxUnarchiveLine,
 } from 'react-icons/ri';
@@ -28,7 +27,6 @@ const MailList: React.FC = () => {
     setMessageAsRead,
     toggleMessageAsArchived,
     toggleMessageAsDeleted,
-    permanentDeleteMessage,
     handleLoadNextPage,
     handleFilter,
   } = useMailbox();
@@ -166,17 +164,6 @@ const MailList: React.FC = () => {
                     size="small"
                     onClick={() => toggleMessageAsDeleted(id, index)}
                   />
-
-                  {boxName === 'deletes' && (
-                    <Button
-                      iconOnly
-                      icon={RiDeleteBin2Line}
-                      color="danger"
-                      variant="outline"
-                      size="small"
-                      onClick={() => permanentDeleteMessage(id, index)}
-                    />
-                  )}
                 </div>
               </div>
             </ListItem>
