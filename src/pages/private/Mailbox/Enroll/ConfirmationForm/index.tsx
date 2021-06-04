@@ -104,7 +104,10 @@ export const ConfirmationForm: React.FC<EnrollConfirmationFormProps> = ({
         abortEarly: false,
       });
 
-      await api.post(`users/${studentProfile.id}`, formData);
+      await api.post(`users/${studentProfile.id}`, {
+        ...formData,
+        registration_id: message.id,
+      });
 
       setActiveMessageState({
         ...messages[selectedMessage],

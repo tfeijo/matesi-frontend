@@ -154,7 +154,7 @@ const MailDetail: React.FC = ({ children }) => {
 
             {message.isConfirmed && (
               <UserAlreadyRegisteredContainer>
-                Usuário matriculado
+                Aluno matriculado
               </UserAlreadyRegisteredContainer>
             )}
 
