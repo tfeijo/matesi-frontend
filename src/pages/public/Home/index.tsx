@@ -89,20 +89,6 @@ const Home: React.FC = () => {
 
         <div className="card_container">
           <CourseCard
-            course="english"
-            title="Inglês"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
-            linkTo="/cursos/ingles"
-          />
-
-          <CourseCard
-            course="spanish"
-            title="Espanhol"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
-            linkTo="/cursos/espanhol"
-          />
-
-          <CourseCard
             course="french"
             title="Frânces"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
@@ -121,6 +107,26 @@ const Home: React.FC = () => {
             title="Alemão"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
             linkTo="/cursos/alemao"
+          />
+
+          <CourseCard
+            course="english"
+            title="Inglês"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
+            linkTo="/cursos/ingles"
+            inClass
+            disabled
+            disabledMotivation="Devido a pandemia não é possível a realização de aulas presenciais."
+          />
+
+          <CourseCard
+            course="spanish"
+            title="Espanhol"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
+            linkTo="/cursos/espanhol"
+            inClass
+            disabled
+            disabledMotivation="Devido a pandemia não é possível a realização de aulas presenciais."
           />
         </div>
       </Courses>

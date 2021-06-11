@@ -1,8 +1,12 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Tag from '../../../../components/Tag';
 import mediaQuery from '../../../../utils/mediaQuery';
 
-export const Container = styled.div`
+type ContainerProps = {
+  disabled: boolean;
+};
+
+export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -39,6 +43,14 @@ export const Container = styled.div`
       width: 19.6rem;
     }
   }
+
+  ${p =>
+    p.disabled &&
+    css`
+      > svg {
+        filter: saturate(0);
+      }
+    `}
 
   ${mediaQuery.tabletPortraitUp} {
     display: block;
@@ -78,8 +90,41 @@ export const Container = styled.div`
     font: var(--font-heading-medium);
   }
 
-  ${Tag} {
+  .tag-container {
     margin: 1.2rem 0;
+    display: inline-block;
+    position: relative;
+
+    ${Tag} {
+      display: inline-flex;
+      align-items: center;
+
+      svg {
+        margin-left: 0.8rem;
+        color: #ebeb21;
+      }
+    }
+
+    &:hover .disabled-motivation {
+      display: initial;
+    }
+
+    .disabled-motivation {
+      position: absolute;
+      bottom: calc(100% + 0.8rem);
+      right: 50%;
+      transform: translateX(50%);
+
+      width: 25rem;
+      background: #ffffe3;
+      border: 0.1rem solid #ebeb21;
+      color: #424208;
+      border-radius: var(--radius-medium);
+      box-shadow: var(--elevation-medium);
+      padding: 0.8rem;
+      font: var(--font-body-small);
+      display: none;
+    }
   }
 
   a {
@@ -99,8 +144,13 @@ export const Container = styled.div`
       justify-content: space-between;
       margin-bottom: 1.2rem;
 
-      ${Tag} {
+      .tag-container {
         margin: unset;
+
+        .disabled-motivation {
+          right: 0;
+          transform: unset;
+        }
       }
     }
   }

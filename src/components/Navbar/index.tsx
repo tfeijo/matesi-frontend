@@ -63,11 +63,11 @@ const Navbar: React.FC = () => {
               <NavDropdown
                 title="Cursos"
                 links={[
-                  { to: '/cursos/ingles', title: 'Inglês' },
-                  { to: '/cursos/espanhol', title: 'Espanhol' },
                   { to: '/cursos/frances', title: 'Frances' },
                   { to: '/cursos/coreano', title: 'Coreano' },
                   { to: '/cursos/alemao', title: 'Alemão' },
+                  { to: '/cursos/ingles', title: 'Inglês' },
+                  { to: '/cursos/espanhol', title: 'Espanhol' },
                 ]}
               />
             </li>
