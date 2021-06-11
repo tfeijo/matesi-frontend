@@ -61,12 +61,6 @@ const Footer: React.FC = () => {
             <h3>Cursos</h3>
             <ul>
               <li>
-                <Link to="/cursos/ingles">Inglês</Link>
-              </li>
-              <li>
-                <Link to="/cursos/espanhol">Espanhol</Link>
-              </li>
-              <li>
                 <Link to="/cursos/frances">Francês</Link>
               </li>
               <li>
@@ -74,6 +68,12 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/cursos/alemao">Alemão</Link>
+              </li>
+              <li>
+                <Link to="/cursos/ingles">Inglês</Link>
+              </li>
+              <li>
+                <Link to="/cursos/espanhol">Espanhol</Link>
               </li>
             </ul>
           </div>
