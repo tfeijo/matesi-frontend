@@ -1,4 +1,5 @@
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
+import { MdWarning } from 'react-icons/md';
 
 import { ReactComponent as UsaFlag } from '../../../../assets/flags/usa.svg';
 import { ReactComponent as SpainFlag } from '../../../../assets/flags/spain.svg';
@@ -25,18 +26,37 @@ interface Props {
   inClass?: boolean;
   description: string;
   linkTo: string;
+  disabled?: boolean;
+  disabledMotivation?: string;
 }
 
-const CourseCard = ({ course, title, inClass, description, linkTo }: Props) => {
+const CourseCard = ({
+  course,
+  title,
+  inClass,
+  description,
+  linkTo,
+  disabled = false,
+  disabledMotivation,
+}: Props) => {
   const FlagSVG = COURSE_FLAG[course];
 
   return (
-    <Container>
+    <Container disabled={disabled}>
       <FlagSVG />
 
       <div>
         <h3>{title}</h3>
-        <Tag color="secondary">{inClass ? 'Presencial' : 'Online'}</Tag>
+        <div className="tag-container">
+          <Tag className="tag" color="secondary">
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {disabled ? 'Em breve' : inClass ? 'Presencial' : 'Online'}
+            {disabledMotivation && <MdWarning />}
+          </Tag>
+          {disabledMotivation && (
+            <span className="disabled-motivation">{disabledMotivation}</span>
+          )}
+        </div>
       </div>
       <p>{description}</p>
 
