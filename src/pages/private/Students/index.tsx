@@ -294,6 +294,7 @@ const Students: React.FC = () => {
             courses={allCourses}
             studentProfile={studentProfile}
             initialData={editingInitialData as RegisterModalInitialData}
+            onRegisterForm={() => loadStudents(paginationInfo?.current_page)}
           />
         )}
       </ModalTrigger>

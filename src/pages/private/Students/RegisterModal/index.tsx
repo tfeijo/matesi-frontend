@@ -44,6 +44,7 @@ interface RegisterModalProps {
   courses: TCourse[];
   studentProfile: TProfile;
   initialData?: RegisterModalInitialData;
+  onRegisterForm?: () => void;
 }
 
 type TKey = keyof FormCourses;
@@ -64,6 +65,7 @@ export default function RegisterModal({
   courses,
   studentProfile,
   initialData,
+  onRegisterForm,
 }: RegisterModalProps) {
   const [coursesError, setCoursesError] = useState('');
 
@@ -140,10 +142,10 @@ export default function RegisterModal({
           .filter(values => values);
 
         const updatedData = Object.assign({}, ...updatedDataAsArray);
-        api.put(`users/${initialData.id}`, updatedData);
+        await api.put(`users/${initialData.id}`, updatedData);
         toast.success('Matricula atualizada com sucesso!');
       } else {
-        api.post(`users/${studentProfile.id}`, formData);
+        await api.post(`users/${studentProfile.id}`, formData);
         toast.success('Matricula realizada com sucesso!');
       }
 
@@ -151,6 +153,7 @@ export default function RegisterModal({
       formRef.current?.setErrors({});
 
       if (!initialData) formRef.current?.reset();
+      if (onRegisterForm) onRegisterForm();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors: Record<string, string> = {};
@@ -213,7 +216,7 @@ export default function RegisterModal({
           <Input label="Telefone" name="phone" />
 
           <Button type="submit" block>
-            Efetuar matrícula
+            {initialData ? 'Atualizar' : 'Efetuar'} matrícula
           </Button>
         </Form>
       </div>
