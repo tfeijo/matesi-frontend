@@ -154,6 +154,7 @@ export default function RegisterModal({
 
       if (!initialData) formRef.current?.reset();
       if (onRegisterForm) onRegisterForm();
+      onRequestClose();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors: Record<string, string> = {};
