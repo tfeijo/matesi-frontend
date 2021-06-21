@@ -22,6 +22,7 @@ api.interceptors.response.use(
         window.location.href = '/entrar';
       }
     }
+    return Promise.reject(error);
   },
 );
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MdSearch } from 'react-icons/md';
+import { MdEdit, MdSearch } from 'react-icons/md';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
@@ -26,7 +26,7 @@ import Pagination from '../../../components/Pagination';
 import Dropdown from '../../../components/Dropdown';
 import api from '../../../services/api';
 import Loader from '../../../components/Loader';
-import RegisterModal from './RegisterModal';
+import RegisterModal, { RegisterModalInitialData } from './RegisterModal';
 
 const COURSE_FLAGS: { [key: string]: React.FunctionComponent } = {
   english: UsaFlag,
@@ -42,8 +42,11 @@ type TProfile = { id: string; name: string };
 type CourseWithFlag = Course & { flag: string };
 
 type Student = {
+  id: string;
   first_name: string;
   last_name: string;
+  birth_date: string;
+  cpf: string;
   email: string;
   phone: string;
   courses: CourseWithFlag[];
@@ -83,6 +86,7 @@ const Students: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(-1);
 
   function formatStudents(users: StudentsWithoutFlag[]) {
     return users.map(user => {
@@ -181,6 +185,8 @@ const Students: React.FC = () => {
       toast.error(
         'Não foi possível carregar os alunos cadastrados. Por favor, tente novamente',
       );
+      setStudents([]);
+      setIsLoading(false);
     }
   }
 
@@ -194,6 +200,7 @@ const Students: React.FC = () => {
 
   function handleCloseRegisterModal() {
     setIsRegisterModalOpen(false);
+    if (editingStudent >= 0) setEditingStudent(-1);
   }
 
   function handleFilterByCourse(id?: string) {
@@ -251,6 +258,25 @@ const Students: React.FC = () => {
 
   if (students === null) return <Loader size={48} style={{ height: '80vh' }} />;
 
+  let editingInitialData;
+  if (editingStudent >= 0) {
+    const studentCourses: any = {};
+
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < students[editingStudent].courses.length; i++) {
+      const course = students[editingStudent].courses[i];
+      studentCourses[course.flag] = course.id;
+    }
+
+    const courses = studentCourses as RegisterModalInitialData;
+
+    editingInitialData = {
+      ...students[editingStudent],
+      birth_date: new Date(students[editingStudent].birth_date),
+      courses,
+    };
+  }
+
   return (
     <Container>
       <ModalTrigger>
@@ -267,6 +293,7 @@ const Students: React.FC = () => {
             onRequestClose={handleCloseRegisterModal}
             courses={allCourses}
             studentProfile={studentProfile}
+            initialData={editingInitialData as RegisterModalInitialData}
           />
         )}
       </ModalTrigger>
@@ -366,7 +393,7 @@ const Students: React.FC = () => {
         <>
           <List>
             {students.map(
-              ({ first_name, last_name, email, phone, courses }) => (
+              ({ first_name, last_name, email, phone, courses }, index) => (
                 <li key={email}>
                   <p>
                     {first_name} {last_name}
@@ -385,6 +412,19 @@ const Students: React.FC = () => {
                     <span>Tel: </span>
                     {phone}
                   </p>
+                  <span className="edit-student">
+                    <Button
+                      iconOnly
+                      icon={MdEdit}
+                      size="small"
+                      color="secondary"
+                      variant="outline"
+                      onClick={() => {
+                        setEditingStudent(index);
+                        handleOpenRegisterModal();
+                      }}
+                    />
+                  </span>
                 </li>
               ),
             )}
