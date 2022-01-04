@@ -11,6 +11,7 @@ import Input from '../../../../components/Input';
 import api from '../../../../services/api';
 import { StyledReactModal } from './styles';
 
+//! TYPES
 type TCourse = { id: string; name: string };
 type TProfile = { id: string; name: string };
 
@@ -32,22 +33,39 @@ interface IFormData {
   courses: FormCourses;
 }
 
+export type RegisterModalInitialData = Omit<IFormData, 'courses'> & {
+  courses: Partial<FormCourses>;
+  id: string;
+};
+
 interface RegisterModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   courses: TCourse[];
   studentProfile: TProfile;
+  initialData?: RegisterModalInitialData;
+  onRegisterForm?: () => void;
 }
 
 type TKey = keyof FormCourses;
 
 StyledReactModal.setAppElement('#root');
 
+//! HELPERS
+function filterCoursesToArrayOfIds(courses: Partial<FormCourses>) {
+  return Object.keys(courses)
+    .map(key => courses[key as TKey])
+    .filter(course => course);
+}
+
+//! COMPONENT
 export default function RegisterModal({
   isOpen,
   onRequestClose,
   courses,
   studentProfile,
+  initialData,
+  onRegisterForm,
 }: RegisterModalProps) {
   const [coursesError, setCoursesError] = useState('');
 
@@ -58,9 +76,7 @@ export default function RegisterModal({
       formRef.current?.setErrors({});
       setCoursesError('');
 
-      const selectedCourses = Object.keys(data.courses)
-        .map(key => data.courses[key as TKey])
-        .filter(course => course);
+      const selectedCourses = filterCoursesToArrayOfIds(data.courses);
 
       const formData = {
         first_name: data.first_name,
@@ -102,13 +118,43 @@ export default function RegisterModal({
         abortEarly: false,
       });
 
-      await api.post(`users/${studentProfile.id}`, formData);
+      if (initialData) {
+        const updatedDataAsArray = Object.keys(formData)
+          .map(key => {
+            if (key === 'courses_id') {
+              const studentCourses = filterCoursesToArrayOfIds(
+                initialData.courses,
+              );
+              const newCourses = formData.courses_id;
 
-      toast.success('Matricula realizada com sucesso!');
+              if (JSON.stringify(newCourses) === JSON.stringify(studentCourses))
+                return '';
+
+              return { courses_id: newCourses };
+            }
+
+            const newData = formData[key as keyof typeof formData];
+            if (newData !== initialData[key as keyof typeof initialData])
+              return { [key]: newData };
+
+            return '';
+          })
+          .filter(values => values);
+
+        const updatedData = Object.assign({}, ...updatedDataAsArray);
+        await api.put(`users/${initialData.id}`, updatedData);
+        toast.success('Matricula atualizada com sucesso!');
+      } else {
+        await api.post(`users/${studentProfile.id}`, formData);
+        toast.success('Matricula realizada com sucesso!');
+      }
 
       setCoursesError('');
       formRef.current?.setErrors({});
-      formRef.current?.reset();
+
+      if (!initialData) formRef.current?.reset();
+      if (onRegisterForm) onRegisterForm();
+      onRequestClose();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors: Record<string, string> = {};
@@ -145,9 +191,9 @@ export default function RegisterModal({
           onClick={onRequestClose}
         />
 
-        <h2>Matricular aluno</h2>
+        <h2>{initialData ? 'Atualizar' : 'Matricular'} aluno</h2>
 
-        <Form ref={formRef} onSubmit={handleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit} initialData={initialData}>
           <div className="course-selection">
             <CourseCheckboxGroup courses={courses} />
             {coursesError && (
@@ -171,7 +217,7 @@ export default function RegisterModal({
           <Input label="Telefone" name="phone" />
 
           <Button type="submit" block>
-            Efetuar matrícula
+            {initialData ? 'Atualizar' : 'Efetuar'} matrícula
           </Button>
         </Form>
       </div>

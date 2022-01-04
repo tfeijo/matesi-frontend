@@ -11,7 +11,7 @@ export const Container = styled.section`
   }
 
   ${mediaQuery.tabletLandscapeUp} {
-    --grid-columns-table-style: 1.6fr 1.2fr 1.5fr 0.9fr;
+    --grid-columns-table-style: 1.6fr 1.2fr 1.5fr 0.9fr 3.6rem;
     --grid-gap-table-style: 1.2rem;
 
     margin-top: 6.4rem;
@@ -206,6 +206,10 @@ export const List = styled.ul`
           display: none;
         }
       }
+    }
+
+    span.edit-student {
+      display: block;
     }
   }
 `;
