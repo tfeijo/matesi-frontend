@@ -3,7 +3,7 @@ import Tag from '../../../../components/Tag';
 import mediaQuery from '../../../../utils/mediaQuery';
 
 type ContainerProps = {
-  disabled: boolean;
+  $disabled: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
@@ -45,7 +45,7 @@ export const Container = styled.div<ContainerProps>`
   }
 
   ${p =>
-    p.disabled &&
+    p.$disabled &&
     css`
       > svg {
         filter: saturate(0);

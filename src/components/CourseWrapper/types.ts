@@ -25,5 +25,5 @@ export type CourseWrapperProps = {
 
 //* Styled Components
 export type HeroProps = {
-  backgroundUrl: string;
+  $backgroundUrl: string;
 };

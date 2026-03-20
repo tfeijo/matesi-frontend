@@ -50,11 +50,11 @@ function Button({
   return (
     <CustomButton
       as={as}
-      color={color}
-      variant={variant}
-      size={size}
-      iconOnly={iconOnly}
-      block={block}
+      $color={color}
+      $variant={variant}
+      $size={size}
+      $iconOnly={iconOnly}
+      $block={block}
       {...extraProps}
       {...rest}
     >

@@ -31,7 +31,7 @@ const About: React.FC = () => {
         </div>
 
         <Team>
-          <Member isSelected={selectedMember === 1}>
+          <Member $isSelected={selectedMember === 1}>
             <img src={talitaImg} alt="Talita" />
             <div className="legend">
               <p>Talita</p>
@@ -48,7 +48,7 @@ const About: React.FC = () => {
             </button>
           </Member>
 
-          <Member isSelected={selectedMember === 2}>
+          <Member $isSelected={selectedMember === 2}>
             <img src={vivianeImg} alt="Viviane" />
             <div className="legend">
               <p>Viviane</p>
@@ -65,7 +65,7 @@ const About: React.FC = () => {
             </button>
           </Member>
 
-          <Member isSelected={selectedMember === 3}>
+          <Member $isSelected={selectedMember === 3}>
             <img src={anaBeatrizImg} alt="Talita" />
             <div className="legend">
               <p>Ana Beatriz</p>

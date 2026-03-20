@@ -22,7 +22,7 @@ const CourseCard: React.FC<InternalLinkProps | ExternalLinkProps> = ({
   ...rest
 }) => {
   let props = {
-    color,
+    $color: color,
     ...rest,
   };
 

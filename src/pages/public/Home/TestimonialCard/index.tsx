@@ -1,8 +1,8 @@
-import { ReactComponent as UsaFlag } from '../../../../assets/flags/usa-square.svg';
-import { ReactComponent as SpainFlag } from '../../../../assets/flags/spain-square.svg';
-import { ReactComponent as FranceFlag } from '../../../../assets/flags/france-square.svg';
-import { ReactComponent as KoreaFlag } from '../../../../assets/flags/korea-square.svg';
-import { ReactComponent as GermanyFlag } from '../../../../assets/flags/germany-square.svg';
+import UsaFlag from '../../../../assets/flags/usa-square.svg?react';
+import SpainFlag from '../../../../assets/flags/spain-square.svg?react';
+import FranceFlag from '../../../../assets/flags/france-square.svg?react';
+import KoreaFlag from '../../../../assets/flags/korea-square.svg?react';
+import GermanyFlag from '../../../../assets/flags/germany-square.svg?react';
 
 import { Container, About, Message } from './styles';
 

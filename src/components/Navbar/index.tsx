@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { MdClose, MdMenu } from 'react-icons/md';
 import { NavLink, useLocation } from 'react-router-dom';
 
-import { ReactComponent as Logo } from '../../assets/logo.svg';
+import Logo from '../../assets/logo.svg?react';
 import useAuth from '../../hooks/useAuth';
 import Button from '../Button';
 import { NavDropdown } from './NavDropdown';
@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
 
         {isMenuOpen && <Backdrop onClick={closeMenu} />}
 
-        <NavMenu isOpen={isMenuOpen}>
+        <NavMenu $isOpen={isMenuOpen}>
           <Button
             color="light"
             variant="ghost"

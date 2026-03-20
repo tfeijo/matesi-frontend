@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   RiCloseLine,
   RiDeleteBin2Line,
@@ -6,9 +6,7 @@ import {
   RiInboxUnarchiveLine,
 } from 'react-icons/ri';
 import { MdChevronLeft, MdUndo } from 'react-icons/md';
-
-import { Form } from '@unform/web';
-import { FormHandles, SubmitHandler } from '@unform/core';
+import { useForm, FormProvider } from 'react-hook-form';
 
 import Link from '../../Link';
 import Button from '../../Button';
@@ -25,8 +23,8 @@ import Checkbox from '../../Checkbox';
 import { useMailbox } from '../../../context/MailboxContext';
 import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
-const MailDetail: React.FC = ({ children }) => {
-  const formRef = useRef<FormHandles>(null);
+const MailDetail: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const contactedMethods = useForm<{ contacted: boolean }>();
   const [
     isConfirmPermanentDeleteModalOpen,
     setIsConfirmPermanentDeleteModalOpen,
@@ -54,7 +52,7 @@ const MailDetail: React.FC = ({ children }) => {
 
   const message = messages[selectedMessage];
 
-  const handleSubmit: SubmitHandler<{ contacted: boolean }> = data => {
+  const handleSubmit = (data: { contacted: boolean }) => {
     toggleMessageAsContacted(data.contacted);
   };
 
@@ -78,7 +76,7 @@ const MailDetail: React.FC = ({ children }) => {
   const softDeleteColor = boxName === 'deletes' ? 'neutral' : 'danger';
 
   return (
-    <Container isOpen={isMessageOpen}>
+    <Container $isOpen={isMessageOpen}>
       {selectedMessage >= 0 && (
         <>
           <BackButton onClick={() => toggleMessage()}>
@@ -117,20 +115,16 @@ const MailDetail: React.FC = ({ children }) => {
             </Message>
 
             <Actions>
-              <Form
-                ref={formRef}
-                onSubmit={handleSubmit}
-                initialData={{
-                  contacted: message.isContact,
-                }}
-              >
-                <Checkbox
-                  key={Math.random()}
-                  label="Contato realizado"
-                  name="contacted"
-                  onChange={() => formRef.current?.submitForm()}
-                />
-              </Form>
+              <FormProvider {...contactedMethods}>
+                <form onSubmit={contactedMethods.handleSubmit(handleSubmit)}>
+                  <Checkbox
+                    label="Contato realizado"
+                    name="contacted"
+                    defaultChecked={message.isContact}
+                    onChange={() => contactedMethods.handleSubmit(handleSubmit)()}
+                  />
+                </form>
+              </FormProvider>
 
               <div className="buttons">
                 <Button

@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { useField } from '@unform/core';
+import { useFormContext } from 'react-hook-form';
 
 import { Container } from './styles';
 
@@ -19,38 +18,26 @@ function Input({
   name,
   ...rest
 }: InputProps | TextAreaProps) {
-  const ref = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
-
-  const { fieldName, registerField, defaultValue, error } = useField(name);
-
-  useEffect(() => {
-    if (ref.current) {
-      registerField({
-        name: fieldName,
-        ref: ref.current,
-        path: 'value',
-      });
-    }
-  }, [fieldName, registerField]);
+  const { register, formState: { errors } } = useFormContext();
+  const error = errors[name]?.message as string | undefined;
+  const registration = register(name);
 
   const props = {
     ...rest,
-    ref,
+    ...registration,
     id: name,
-    name: fieldName,
-    'aria-label': fieldName,
-    defaultValue,
+    'aria-label': name,
     disabled,
   };
 
   return (
-    <Container hasError={!!error} isDisabled={disabled}>
+    <Container $hasError={!!error} $isDisabled={disabled}>
       {label && <label htmlFor={name}>{label}</label>}
 
       {multiline ? (
-        <textarea {...(props as TextAreaProps)} />
+        <textarea {...(props as any)} />
       ) : (
-        <input {...(props as InputProps)} />
+        <input {...(props as any)} />
       )}
 
       {error && <span>{error}</span>}

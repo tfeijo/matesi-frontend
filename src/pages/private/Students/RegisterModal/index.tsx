@@ -1,6 +1,6 @@
-import { FormHandles, SubmitHandler } from '@unform/core';
-import { Form } from '@unform/web';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { MdClose } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -51,6 +51,28 @@ type TKey = keyof FormCourses;
 
 StyledReactModal.setAppElement('#root');
 
+const schema = Yup.object().shape({
+  first_name: Yup.string()
+    .min(3, 'O nome deve possuir ao menos 3 letras.')
+    .required('O nome é obrigatório.'),
+  last_name: Yup.string()
+    .min(3, 'O sobrenome deve possuir ao menos 3 letras.')
+    .required('O sobrenome é obrigatório.'),
+  cpf: Yup.string()
+    .matches(/\d{11}/g, 'O cpf deve possuir 11 números.')
+    .required('O cpf é obrigatório.'),
+  email: Yup.string()
+    .email('O email deve ser um email válido.')
+    .required('O email é obrigatório.'),
+  birth_date: Yup.mixed().required('A data de nascimento é obrigatória.'),
+  phone: Yup.string()
+    .matches(
+      /^(?:(\d{2}))(?:((?:9\d|[2-9])\d{3})(\d{4}))$/g,
+      'O telefone deve ser um número válido (DDD + número)',
+    )
+    .required('O telefone é obrigatório'),
+});
+
 //! HELPERS
 function filterCoursesToArrayOfIds(courses: Partial<FormCourses>) {
   return Object.keys(courses)
@@ -69,14 +91,27 @@ export default function RegisterModal({
 }: RegisterModalProps) {
   const [coursesError, setCoursesError] = useState('');
 
-  const formRef = useRef<FormHandles>(null);
+  const methods = useForm<IFormData>({
+    resolver: yupResolver(schema),
+    defaultValues: initialData as unknown as IFormData,
+  });
 
-  const handleSubmit: SubmitHandler<IFormData> = async data => {
+  useEffect(() => {
+    if (initialData) {
+      methods.reset(initialData as unknown as IFormData);
+    }
+  }, [initialData, methods]);
+
+  const onSubmit = async (data: IFormData) => {
     try {
-      formRef.current?.setErrors({});
       setCoursesError('');
 
       const selectedCourses = filterCoursesToArrayOfIds(data.courses);
+
+      if (selectedCourses.length === 0) {
+        setCoursesError('Ao menos um curso deve ser selecionado');
+        return;
+      }
 
       const formData = {
         first_name: data.first_name,
@@ -87,36 +122,6 @@ export default function RegisterModal({
         phone: data.phone,
         courses_id: selectedCourses,
       };
-
-      const schema = Yup.object().shape({
-        first_name: Yup.string()
-          .min(3, 'O nome deve possuir ao menos 3 letras.')
-          .required('O nome é obrigatório.'),
-        last_name: Yup.string()
-          .min(3, 'O sobrenome deve possuir ao menos 3 letras.')
-          .required('O sobrenome é obrigatório.'),
-        cpf: Yup.string()
-          .matches(/\d{11}/g, 'O cpf deve possuir 11 números.')
-          .required('O cpf é obrigatório.'),
-        email: Yup.string()
-          .email('O email deve ser um email válido.')
-          .required('O email é obrigatório.'),
-        birth_date: Yup.mixed().required('A data de nascimento é obrigatória.'),
-        phone: Yup.string()
-          .matches(
-            /^(?:(\d{2}))(?:((?:9\d|[2-9])\d{3})(\d{4}))$/g,
-            'O telefone deve ser um número válido (DDD + número)',
-          )
-          .required('O telefone é obrigatório'),
-        courses_id: Yup.array().min(
-          1,
-          'Ao menos um curso deve ser selecionado',
-        ),
-      });
-
-      await schema.validate(formData, {
-        abortEarly: false,
-      });
 
       if (initialData) {
         const updatedDataAsArray = Object.keys(formData)
@@ -150,27 +155,12 @@ export default function RegisterModal({
       }
 
       setCoursesError('');
-      formRef.current?.setErrors({});
 
-      if (!initialData) formRef.current?.reset();
+      if (!initialData) methods.reset();
       if (onRegisterForm) onRegisterForm();
       onRequestClose();
     } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const validationErrors: Record<string, string> = {};
-
-        error.inner.forEach(err => {
-          if (err.path) validationErrors[err.path] = err.message;
-        });
-        formRef.current?.setErrors(validationErrors);
-        if (validationErrors.courses_id) {
-          setCoursesError(validationErrors.courses_id);
-        }
-
-        return;
-      }
-
-      if (error.response.status === 400) {
+      if (error.response?.status === 400) {
         toast.error(error.response.data.message);
         return;
       }
@@ -193,33 +183,35 @@ export default function RegisterModal({
 
         <h2>{initialData ? 'Atualizar' : 'Matricular'} aluno</h2>
 
-        <Form ref={formRef} onSubmit={handleSubmit} initialData={initialData}>
-          <div className="course-selection">
-            <CourseCheckboxGroup courses={courses} />
-            {coursesError && (
-              <span className="courses-error">{coursesError}</span>
-            )}
-          </div>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <div className="course-selection">
+              <CourseCheckboxGroup courses={courses} />
+              {coursesError && (
+                <span className="courses-error">{coursesError}</span>
+              )}
+            </div>
 
-          <Input label="Nome" name="first_name" />
-          <Input label="Sobrenome" name="last_name" />
-          <DatePicker
-            containerClassName="date-picker"
-            label="Data de nascimento"
-            name="birth_date"
-            maxDate={new Date()}
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-          />
-          <Input label="CPF" name="cpf" />
-          <Input label="E-mail" name="email" type="email" />
-          <Input label="Telefone" name="phone" />
+            <Input label="Nome" name="first_name" />
+            <Input label="Sobrenome" name="last_name" />
+            <DatePicker
+              containerClassName="date-picker"
+              label="Data de nascimento"
+              name="birth_date"
+              maxDate={new Date()}
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+            />
+            <Input label="CPF" name="cpf" />
+            <Input label="E-mail" name="email" type="email" />
+            <Input label="Telefone" name="phone" />
 
-          <Button type="submit" block>
-            {initialData ? 'Atualizar' : 'Efetuar'} matrícula
-          </Button>
-        </Form>
+            <Button type="submit" block>
+              {initialData ? 'Atualizar' : 'Efetuar'} matrícula
+            </Button>
+          </form>
+        </FormProvider>
       </div>
       <div className="margin-bottom" />
     </StyledReactModal>

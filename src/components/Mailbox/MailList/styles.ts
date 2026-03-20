@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { Form } from '@unform/web';
 import mediaQuery from '../../../utils/mediaQuery';
 
 export const Container = styled.div`
@@ -9,7 +8,7 @@ export const Container = styled.div`
 `;
 
 type SearchProps = {
-  isSearching: boolean;
+  $isSearching: boolean;
 };
 
 export const Header = styled.header<SearchProps>`
@@ -23,27 +22,26 @@ export const Header = styled.header<SearchProps>`
 
   h2 {
     font: var(--font-heading-small);
-    display: ${({ isSearching }) => (isSearching ? 'none' : 'initial')};
+    display: ${({ $isSearching }) => ($isSearching ? 'none' : 'initial')};
   }
 `;
 
-// eslint-disable-next-line
-export const SearchForm = styled(Form) <SearchProps>`
-  ${({ isSearching }) => css`
+export const SearchForm = styled.form<SearchProps>`
+  ${({ $isSearching }) => css`
     display: flex;
     justify-content: space-between;
 
-    width: ${isSearching ? '100%' : '4.4rem'};
+    width: ${$isSearching ? '100%' : '4.4rem'};
 
     > div.field {
-      display: ${isSearching ? 'initial' : 'none'};
+      display: ${$isSearching ? 'initial' : 'none'};
       position: relative;
       flex: 1;
       margin-left: 1.6rem;
 
       input {
         margin-bottom: 0;
-        opacity: ${!isSearching && '0'};
+        opacity: ${!$isSearching && '0'};
       }
 
       button {
@@ -56,8 +54,8 @@ export const SearchForm = styled(Form) <SearchProps>`
 `;
 
 type ListItemProps = {
-  isActive: boolean;
-  isRead: boolean;
+  $isActive: boolean;
+  $isRead: boolean;
 };
 
 export const ListItem = styled.li<ListItemProps>`
@@ -65,8 +63,8 @@ export const ListItem = styled.li<ListItemProps>`
   border-bottom: 0.1rem solid var(--color-line);
   position: relative;
 
-  ${({ isRead }) =>
-    isRead &&
+  ${({ $isRead }) =>
+    $isRead &&
     css`
       &::before {
         display: none;
@@ -84,7 +82,7 @@ export const ListItem = styled.li<ListItemProps>`
   }
 
   ${p =>
-    p.isActive &&
+    p.$isActive &&
     css`
       background-color: var(--color-off-white);
     `}

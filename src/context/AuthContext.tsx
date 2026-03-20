@@ -22,14 +22,14 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue);
 
-const AuthProvider: React.FC = ({ children }) => {
+const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = usePersistedState<User | null>('@matesi:user', null);
   const [token, setToken] = usePersistedState('@matesi:token', '');
 
   useEffect(() => {
     if (user && token) {
-      api.defaults.headers.Authorization = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
 
     setIsLoading(false);
@@ -39,7 +39,7 @@ const AuthProvider: React.FC = ({ children }) => {
     async (credentials: Credentials) => {
       const { data } = await api.post('sessions', credentials);
 
-      api.defaults.headers.Authorization = `Bearer ${data.token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
       setUser(data.user);
       setToken(data.token);
@@ -50,7 +50,7 @@ const AuthProvider: React.FC = ({ children }) => {
   const signOut = useCallback(() => {
     setUser(null);
     setToken('');
-    api.defaults.headers.Authorization = undefined;
+    api.defaults.headers.common['Authorization'] = undefined;
   }, [setToken, setUser]);
 
   return (

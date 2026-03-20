@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import mediaQuery from '../../../utils/mediaQuery';
 
 type TContainerProps = {
-  isOpen: boolean;
+  $isOpen: boolean;
 };
 
 export const Container = styled.div<TContainerProps>`
@@ -10,9 +10,9 @@ export const Container = styled.div<TContainerProps>`
   transition: transform 0.3s ease-in-out;
 
   ${mediaQuery.custom(899.99, 'max')} {
-    ${({ isOpen }) =>
-    /* eslint-disable */
-    isOpen &&
+    ${({ $isOpen }) =>
+     
+    $isOpen &&
     css`
     /* eslint-enable */
         transform: translateX(-100%);

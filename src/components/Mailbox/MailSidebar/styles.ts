@@ -2,7 +2,7 @@ import styled, { css, keyframes } from 'styled-components';
 import mediaQuery from '../../../utils/mediaQuery';
 
 type TNavMenu = {
-  isOpen: boolean;
+  $isOpen: boolean;
 };
 
 export const Container = styled.aside`
@@ -81,7 +81,7 @@ export const NavMenu = styled.nav<TNavMenu>`
   top: 0;
   right: 0;
   width: 100%;
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   animation: ${slideIn} 0.15s;
 
   ${MenuToggler} {

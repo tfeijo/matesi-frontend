@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useLocation, useRouteMatch } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   RiAccountBoxLine,
   RiCloseLine,
@@ -19,7 +19,6 @@ type UnreadValues = {
 };
 
 const MailSidebar: React.FC = () => {
-  const { path } = useRouteMatch();
   const { pathname } = useLocation();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,7 +66,7 @@ const MailSidebar: React.FC = () => {
         </span>
       </MenuToggler>
 
-      <NavMenu isOpen={isMenuOpen}>
+      <NavMenu $isOpen={isMenuOpen}>
         <ul>
           <li>
             <MenuToggler onClick={() => setIsMenuOpen(false)}>
@@ -79,7 +78,7 @@ const MailSidebar: React.FC = () => {
           </li>
 
           <li>
-            <NavLink to={`${path}/matriculas`}>
+            <NavLink to="/mensagens/matriculas">
               <span className="right-content">
                 <RiAccountBoxLine size={24} />
                 Pré-matricula
@@ -90,7 +89,7 @@ const MailSidebar: React.FC = () => {
           </li>
 
           <li>
-            <NavLink to={`${path}/fale-conosco`}>
+            <NavLink to="/mensagens/fale-conosco">
               <span className="right-content">
                 <RiQuestionLine size={24} />
                 Fale conosco
@@ -101,7 +100,7 @@ const MailSidebar: React.FC = () => {
           </li>
 
           <li>
-            <NavLink to={`${path}/trabalhe-conosco`}>
+            <NavLink to="/mensagens/trabalhe-conosco">
               <span className="right-content">
                 <RiSuitcaseLine size={24} />
                 Trabalhe conosco
@@ -112,7 +111,7 @@ const MailSidebar: React.FC = () => {
           </li>
 
           <li>
-            <NavLink to={`${path}/arquivados`}>
+            <NavLink to="/mensagens/arquivados">
               <span className="right-content">
                 <RiInboxArchiveLine size={24} />
                 Arquivados
@@ -121,7 +120,7 @@ const MailSidebar: React.FC = () => {
           </li>
 
           <li>
-            <NavLink to={`${path}/excluidos`}>
+            <NavLink to="/mensagens/excluidos">
               <span className="right-content">
                 <RiCloseLine size={24} />
                 Excluídos

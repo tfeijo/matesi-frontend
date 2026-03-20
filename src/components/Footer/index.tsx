@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { FaInstagram, FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
 import { MdCopyright } from 'react-icons/md';
 
-import { ReactComponent as Logo } from '../../assets/logo.svg';
+import Logo from '../../assets/logo.svg?react';
 
 import Button from '../Button';
 import {

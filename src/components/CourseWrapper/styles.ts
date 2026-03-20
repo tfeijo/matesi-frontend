@@ -5,7 +5,7 @@ import mediaQuery from '../../utils/mediaQuery';
 
 export const Hero = styled.section<HeroProps>`
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url(${p => p.backgroundUrl});
+    url(${p => p.$backgroundUrl});
   background-position: center;
   background-size: cover;
   position: relative;

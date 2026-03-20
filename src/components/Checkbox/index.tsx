@@ -1,6 +1,5 @@
-/* eslint-disable no-param-reassign */
-import { useField } from '@unform/core';
-import { InputHTMLAttributes, useEffect, useRef } from 'react';
+import { InputHTMLAttributes } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { MdCheck } from 'react-icons/md';
 import { Container } from './style';
 
@@ -19,32 +18,17 @@ function Checkbox({
   disabled = false,
   ...rest
 }: InputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { fieldName, defaultValue, registerField, error } = useField(name);
-
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: inputRef,
-      getValue: ref => ref.current.checked,
-      clearValue: ref => {
-        ref.current.checked = defaultValue;
-      },
-      setValue: ref => {
-        ref.current.checked = !ref.current.checked;
-      },
-    });
-  }, [defaultValue, fieldName, registerField, value]);
+  const { register, formState: { errors } } = useFormContext();
+  const error = errors[name]?.message as string | undefined;
 
   return (
     <Container isDisabled={disabled} hasError={!!error}>
-      <label htmlFor={fieldName} key={fieldName} className="checkbox">
+      <label htmlFor={name} key={name} className="checkbox">
         <input
           type="checkbox"
-          defaultChecked={defaultValue}
-          ref={inputRef}
+          {...register(name)}
           value={value}
-          id={fieldName}
+          id={name}
           disabled={disabled}
           {...rest}
         />

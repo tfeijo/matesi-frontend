@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import WorkingUsMailbox from '../pages/private/Mailbox/WorkingUs';
 import EnrollMailbox from '../pages/private/Mailbox/Enroll';
@@ -7,18 +7,16 @@ import ArchivedMailbox from '../pages/private/Mailbox/Archived';
 import DeletedMailbox from '../pages/private/Mailbox/Deleted';
 
 const MailboxRoutes = () => {
-  const { path } = useRouteMatch();
-
   return (
-    <Switch>
-      <Route path={`${path}/matriculas`} component={EnrollMailbox} />
-      <Route path={`${path}/trabalhe-conosco`} component={WorkingUsMailbox} />
-      <Route path={`${path}/fale-conosco`} component={QuestionsMailbox} />
-      <Route path={`${path}/arquivados`} component={ArchivedMailbox} />
-      <Route path={`${path}/excluidos`} component={DeletedMailbox} />
+    <Routes>
+      <Route path="matriculas" element={<EnrollMailbox />} />
+      <Route path="trabalhe-conosco" element={<WorkingUsMailbox />} />
+      <Route path="fale-conosco" element={<QuestionsMailbox />} />
+      <Route path="arquivados" element={<ArchivedMailbox />} />
+      <Route path="excluidos" element={<DeletedMailbox />} />
 
-      <Route component={() => <Redirect to={`${path}/matriculas`} />} />
-    </Switch>
+      <Route path="*" element={<Navigate to="matriculas" replace />} />
+    </Routes>
   );
 };
 

@@ -10,7 +10,7 @@ import Routes from './routes';
 
 import GlobalStyles from './styles/global';
 
-import 'react-toastify/dist/ReactToastify.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (

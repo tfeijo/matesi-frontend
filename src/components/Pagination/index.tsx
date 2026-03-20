@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import { MouseEvent, useEffect, useState } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import useBreakpoints from '../../hooks/useBreakpoints';

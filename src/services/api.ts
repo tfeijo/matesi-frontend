@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.response.use(
@@ -18,7 +18,7 @@ api.interceptors.response.use(
       ) {
         localStorage.removeItem('@matesi:user');
         localStorage.removeItem('@matesi:token');
-        api.defaults.headers.Authorization = undefined;
+        delete api.defaults.headers.common['Authorization'];
         window.location.href = '/entrar';
       }
     }

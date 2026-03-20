@@ -1,11 +1,11 @@
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
 import { MdWarning } from 'react-icons/md';
 
-import { ReactComponent as UsaFlag } from '../../../../assets/flags/usa.svg';
-import { ReactComponent as SpainFlag } from '../../../../assets/flags/spain.svg';
-import { ReactComponent as FranceFlag } from '../../../../assets/flags/france.svg';
-import { ReactComponent as KoreaFlag } from '../../../../assets/flags/korea.svg';
-import { ReactComponent as GermanyFlag } from '../../../../assets/flags/germany.svg';
+import UsaFlag from '../../../../assets/flags/usa.svg?react';
+import SpainFlag from '../../../../assets/flags/spain.svg?react';
+import FranceFlag from '../../../../assets/flags/france.svg?react';
+import KoreaFlag from '../../../../assets/flags/korea.svg?react';
+import GermanyFlag from '../../../../assets/flags/germany.svg?react';
 
 import Tag from '../../../../components/Tag';
 import Link from '../../../../components/Link';
@@ -42,14 +42,14 @@ const CourseCard = ({
   const FlagSVG = COURSE_FLAG[course];
 
   return (
-    <Container disabled={disabled}>
+    <Container $disabled={disabled}>
       <FlagSVG />
 
       <div>
         <h3>{title}</h3>
         <div className="tag-container">
           <Tag className="tag" color="secondary">
-            {/* eslint-disable-next-line no-nested-ternary */}
+            { }
             {disabled ? 'Em breve' : inClass ? 'Presencial' : 'Online'}
             {disabledMotivation && <MdWarning />}
           </Tag>

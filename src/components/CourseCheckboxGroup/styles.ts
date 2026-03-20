@@ -18,12 +18,12 @@ export const Container = styled.div`
 `;
 
 type SlideProps = {
-  numberOfSlides: number;
+  $numberOfSlides: number;
 };
 
 export const Slide = styled.div<SlideProps>`
-  width: ${({ numberOfSlides }) =>
-    numberOfSlides < 5 ? 'calc(100% - 12rem)' : '100%'};
+  width: ${({ $numberOfSlides }) =>
+    $numberOfSlides < 5 ? 'calc(100% - 12rem)' : '100%'};
   margin: 0 auto;
 
   .slide-items-container {
@@ -45,7 +45,7 @@ export const Slide = styled.div<SlideProps>`
 
   .slide-item {
     flex: none;
-    width: ${({ numberOfSlides }) => `calc(100% / ${numberOfSlides})`};
+    width: ${({ $numberOfSlides }) => `calc(100% / ${$numberOfSlides})`};
     scroll-snap-align: start;
 
     display: flex;
