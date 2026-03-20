@@ -60,7 +60,7 @@ const Home: React.FC = () => {
 
       <Advantages>
         <div>
-          <SectionTitle level="h2">Vantagens</SectionTitle>
+          <SectionTitle $level="h2">Vantagens</SectionTitle>
 
           <div className="card_container">
             <AdvantageCard
@@ -85,7 +85,7 @@ const Home: React.FC = () => {
       </Advantages>
 
       <Courses ref={coursesRef}>
-        <SectionTitle level="h2">Conheça nossos cursos</SectionTitle>
+        <SectionTitle $level="h2">Conheça nossos cursos</SectionTitle>
 
         <div className="card_container">
           <CourseCard
@@ -133,7 +133,7 @@ const Home: React.FC = () => {
 
       <Testimonials>
         <div>
-          <SectionTitle level="h2">O que nossos alunos falam</SectionTitle>
+          <SectionTitle $level="h2">O que nossos alunos falam</SectionTitle>
 
           <div className="card_container">
             <TestimonialCard
@@ -149,7 +149,7 @@ const Home: React.FC = () => {
       </Testimonials>
 
       <Partners>
-        <SectionTitle level="h2">Nossos parceiros</SectionTitle>
+        <SectionTitle $level="h2">Nossos parceiros</SectionTitle>
 
         <div>
           <img src={partner2} alt="Nome do parceiro" />
@@ -161,7 +161,7 @@ const Home: React.FC = () => {
 
       <Contact>
         <div>
-          <SectionTitle level="h2">Fale conosco</SectionTitle>
+          <SectionTitle $level="h2">Fale conosco</SectionTitle>
 
           <div className="content_container">
             <p>Entre em contato conosco por uma de nossas redes sociais.</p>

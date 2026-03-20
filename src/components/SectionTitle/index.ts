@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import mediaQuery from '../../utils/mediaQuery';
 
-type Props = { level: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' };
+type Props = { $level: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' };
 
 export default styled.h1.attrs<Props>(props => ({
-  as: props.level,
+  as: props.$level,
 }))<Props>`
   font: var(--font-heading-large);
   text-align: center;

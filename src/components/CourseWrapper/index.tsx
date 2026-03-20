@@ -18,7 +18,7 @@ function CourseWrapper({ hero, travels, about, gallery }: CourseWrapperProps) {
       </Hero>
 
       <Travels>
-        <SectionTitle level="h1">Conheça o mundo</SectionTitle>
+        <SectionTitle $level="h1">Conheça o mundo</SectionTitle>
 
         <div className="travels__main">
           <div className="travels__image">
@@ -54,7 +54,7 @@ function CourseWrapper({ hero, travels, about, gallery }: CourseWrapperProps) {
       </About>
 
       <Gallery>
-        <SectionTitle level="h1">Atividades e eventos em grupo</SectionTitle>
+        <SectionTitle $level="h1">Atividades e eventos em grupo</SectionTitle>
 
         <div>
           {gallery.map(item => (
