@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-shadow
+ 
 export enum EMessageType {
   registrations = 'registrations',
   questions = 'questions',
@@ -57,6 +57,7 @@ export type TDataFormatterFunction = (
 export interface IMailboxProviderProps {
   boxName: TBoxName;
   dataFormatter: TDataFormatterFunction;
+  children: React.ReactNode;
 }
 
 export interface IMailboxContextData {

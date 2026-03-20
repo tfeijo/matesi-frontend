@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import mediaQuery from '../../../utils/mediaQuery';
 import { navbarLinkStyle } from '../styles';
 
-export const Container = styled.div<{ isOpen: boolean }>`
+export const Container = styled.div<{ $isOpen: boolean }>`
   ${mediaQuery.tabletLandscapeUp} {
     position: relative;
   }
@@ -19,9 +19,9 @@ export const Container = styled.div<{ isOpen: boolean }>`
       margin-left: 0.4rem;
       transition: transform 0.1s;
 
-      ${({ isOpen }) =>
-    /* eslint-disable */
-    isOpen &&
+      ${({ $isOpen }) =>
+     
+    $isOpen &&
     css`
         /* eslint-enable */
           transform: rotate(180deg);
@@ -34,7 +34,7 @@ export const Container = styled.div<{ isOpen: boolean }>`
     background-color: var(--color-secondary-dark);
 
     margin: 0.3rem 0;
-    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
 
     ${mediaQuery.tabletLandscapeUp} {
       position: absolute;

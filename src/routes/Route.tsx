@@ -1,48 +1,31 @@
 import React from 'react';
-import {
-  RouteProps,
-  Route,
-  RouteComponentProps,
-  Redirect,
-} from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import useAuth from '../hooks/useAuth';
 
-interface IProps extends RouteProps {
+interface IProps {
   isAdmin?: boolean;
-  component:
-    | React.ComponentType<RouteComponentProps<any>>
-    | React.ComponentType<any>;
+  children: React.ReactNode;
 }
 
-const RouteWrapper: React.FC<IProps> = ({
-  component: Component,
-  path,
-  isAdmin = false,
-  ...rest
-}) => {
+const ProtectedRoute: React.FC<IProps> = ({ children, isAdmin = false }) => {
   const { isLoading, isSigned } = useAuth();
+  const { pathname } = useLocation();
 
   if (isLoading) return <Loader size={48} style={{ height: '100vh' }} />;
 
-  if (!isSigned && isAdmin) return <Redirect to="/entrar" />;
+  if (!isSigned && isAdmin) return <Navigate to="/entrar" replace />;
 
-  if (isSigned && path === '/entrar')
-    return <Redirect to="/mensagens/matriculas" />;
+  if (isSigned && pathname === '/entrar')
+    return <Navigate to="/mensagens/matriculas" replace />;
 
   return (
-    <Route
-      {...rest}
-      path={path}
-      render={props => (
-        <>
-          <Component {...props} />
-          {isAdmin || <Footer />}
-        </>
-      )}
-    />
+    <>
+      {children}
+      {isAdmin || <Footer />}
+    </>
   );
 };
 
-export default RouteWrapper;
+export default ProtectedRoute;

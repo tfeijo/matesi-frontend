@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 export type TColor = 'primary' | 'secondary';
 
 interface Props {
-  color: TColor;
+  $color: TColor;
 }
 
 export const StyledLink = styled.a<Props>`
@@ -20,11 +20,11 @@ export const StyledLink = styled.a<Props>`
     transition: transform 0.2s;
   }
 
-  ${({ color }) => css`
-    color: var(--color-${color}-default);
+  ${({ $color }) => css`
+    color: var(--color-${$color}-default);
 
     &:hover {
-      color: var(--color-${color}-dark);
+      color: var(--color-${$color}-dark);
 
       svg {
         transform: translateX(0.4rem);
@@ -32,7 +32,7 @@ export const StyledLink = styled.a<Props>`
     }
 
     &:active {
-      color: var(--color-${color}-darker);
+      color: var(--color-${$color}-darker);
 
       svg {
         transform: translateX(0.4rem);
@@ -45,7 +45,7 @@ export const StyledLink = styled.a<Props>`
 
     &:focus {
       outline: 0;
-      box-shadow: 0 0 0 0.3rem var(--color-${color}-light);
+      box-shadow: 0 0 0 0.3rem var(--color-${$color}-light);
     }
   `}
 `;

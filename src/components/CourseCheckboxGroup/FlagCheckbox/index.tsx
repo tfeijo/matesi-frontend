@@ -1,13 +1,12 @@
-/* eslint-disable no-param-reassign */
-import { useField } from '@unform/core';
-import { InputHTMLAttributes, useEffect, useRef } from 'react';
+import { InputHTMLAttributes } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Label } from './style';
 
-import { ReactComponent as UsaFlag } from '../../../assets/flags/usa-square.svg';
-import { ReactComponent as SpainFlag } from '../../../assets/flags/spain-square.svg';
-import { ReactComponent as FranceFlag } from '../../../assets/flags/france-square.svg';
-import { ReactComponent as KoreaFlag } from '../../../assets/flags/korea-square.svg';
-import { ReactComponent as GermanyFlag } from '../../../assets/flags/germany-square.svg';
+import UsaFlag from '../../../assets/flags/usa-square.svg?react';
+import SpainFlag from '../../../assets/flags/spain-square.svg?react';
+import FranceFlag from '../../../assets/flags/france-square.svg?react';
+import KoreaFlag from '../../../assets/flags/korea-square.svg?react';
+import GermanyFlag from '../../../assets/flags/germany-square.svg?react';
 
 interface Props {
   course: keyof typeof COURSE_FLAG;
@@ -27,38 +26,17 @@ const COURSE_FLAG = {
 };
 
 function FlagCheckbox({ name, label, course, value, ...rest }: InputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { fieldName, defaultValue, registerField } = useField(name);
-
-  const defaultChecked = defaultValue === value;
+  const { register } = useFormContext();
 
   const FlagSVG = COURSE_FLAG[course];
-
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: inputRef,
-      getValue: ref => {
-        if (ref.current.checked) return ref.current.value;
-        return '';
-      },
-      clearValue: ref => {
-        ref.current.checked = defaultChecked;
-      },
-      setValue: ref => {
-        ref.current.checked = !ref.current.checked;
-      },
-    });
-  }, [defaultChecked, defaultValue, fieldName, registerField]);
 
   return (
     <Label>
       <input
         type="checkbox"
-        defaultChecked={defaultChecked}
+        {...register(name)}
         value={value}
-        ref={inputRef}
-        id={fieldName}
+        id={name}
         {...rest}
       />
 

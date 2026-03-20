@@ -1,17 +1,17 @@
 import styled, { css } from 'styled-components';
 
 type Props = {
-  hasError?: boolean;
-  isDisabled?: boolean;
+  $hasError?: boolean;
+  $isDisabled?: boolean;
 };
 
 export const Container = styled.div<Props>`
-  ${({ hasError, isDisabled }) => css`
+  ${({ $hasError, $isDisabled }) => css`
     & + & {
       margin-top: 1.6rem;
     }
 
-    opacity: ${isDisabled ? '0.6' : '1'};
+    opacity: ${$isDisabled ? '0.6' : '1'};
 
     label,
     > span {
@@ -38,7 +38,7 @@ export const Container = styled.div<Props>`
       vertical-align: top;
       padding: 0.9rem 1.6rem;
       resize: vertical;
-      margin-bottom: ${hasError ? '0.8rem' : '2.9rem'};
+      margin-bottom: ${$hasError ? '0.8rem' : '2.9rem'};
       transition: border-color 0.15s ease-in-out,
         background-color 0.15s ease-in-out;
 
@@ -57,7 +57,7 @@ export const Container = styled.div<Props>`
       }
     }
 
-    ${hasError &&
+    ${$hasError &&
     css`
       > span {
         color: var(--color-danger-default);

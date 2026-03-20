@@ -3,9 +3,9 @@ import { MdArrowDownward } from 'react-icons/md';
 import { RiInstagramLine, RiWhatsappLine } from 'react-icons/ri';
 import { FaTelegramPlane } from 'react-icons/fa';
 
-import { ReactComponent as Travel } from '../../../assets/travel.svg';
-import { ReactComponent as Live } from '../../../assets/live.svg';
-import { ReactComponent as ThemedClass } from '../../../assets/themed-class.svg';
+import Travel from '../../../assets/travel.svg?react';
+import Live from '../../../assets/live.svg?react';
+import ThemedClass from '../../../assets/themed-class.svg?react';
 
 import womanAvatar from '../../../assets/placeholder/woman-avatar.jpg';
 import partner from '../../../assets/placeholder/partner.png';

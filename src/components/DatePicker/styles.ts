@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div<{ hasError: boolean }>`
+export const Container = styled.div<{ $hasError: boolean }>`
   & + div {
     margin-top: 1rem;
   }
@@ -44,7 +44,7 @@ export const Container = styled.div<{ hasError: boolean }>`
 
     &-wrapper {
       width: 100%;
-      margin-bottom: ${p => (p.hasError ? '0.8rem' : '2.9rem')};
+      margin-bottom: ${p => (p.$hasError ? '0.8rem' : '2.9rem')};
     }
 
     &__close-icon::after {
@@ -106,10 +106,8 @@ export const Container = styled.div<{ hasError: boolean }>`
   }
 
   /* STUṔID AND RIDICULOUS ESLINT AND PRETTIER IS COMPLETELY BUGGY AND LOST */
-  /* IT'S BEING MESS AND IT IS SH**ING EVERYTHING */
   ${props =>
-    /* eslint-disable prettier/prettier */
-    props.hasError &&
+    props.$hasError &&
     css`
         span {
           color: var(--color-danger-default);

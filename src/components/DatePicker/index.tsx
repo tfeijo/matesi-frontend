@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import ReactDatePicker, { ReactDatePickerProps } from 'react-datepicker';
-
-import { useField } from '@unform/core';
+import { useFormContext, Controller } from 'react-hook-form';
 
 import { Container } from './styles';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-interface Props extends Omit<ReactDatePickerProps, 'onChange'> {
+interface Props {
   name: string;
   label?: string;
   containerClassName?: string;
+  dateFormat?: string;
+  isClearable?: boolean;
 }
 
 const DatePicker: React.FC<Props> = ({
@@ -21,35 +22,27 @@ const DatePicker: React.FC<Props> = ({
   isClearable = true,
   ...rest
 }) => {
-  const datepickerRef = useRef(null);
-
-  const { fieldName, registerField, defaultValue, error } = useField(name);
-  const [date, setDate] = useState(defaultValue || null);
-
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: datepickerRef.current,
-      path: 'props.selected',
-      clearValue: (ref: any) => {
-        ref.clear();
-      },
-    });
-  }, [fieldName, registerField]);
+  const { control, formState: { errors } } = useFormContext();
+  const error = errors[name]?.message as string | undefined;
 
   return (
-    <Container hasError={!!error} className={containerClassName}>
-      {label && <label htmlFor={fieldName}>{label}</label>}
+    <Container $hasError={!!error} className={containerClassName}>
+      {label && <label htmlFor={name}>{label}</label>}
 
-      <ReactDatePicker
-        ref={datepickerRef}
-        selected={date}
-        onChange={setDate}
-        id={fieldName}
-        dateFormat={dateFormat}
-        isClearable={isClearable}
-        autoComplete="off"
-        {...rest}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <ReactDatePicker
+            selected={value || null}
+            onChange={onChange}
+            id={name}
+            dateFormat={dateFormat}
+            isClearable={isClearable}
+            autoComplete="off"
+            {...rest}
+          />
+        )}
       />
 
       {error && <span>{error}</span>}

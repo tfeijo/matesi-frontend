@@ -38,7 +38,7 @@ export function NavDropdown({ title, links }: NavDropdownProps) {
   }, [location]);
 
   return (
-    <Container isOpen={isDropdownOpen} ref={dropdownRef}>
+    <Container $isOpen={isDropdownOpen} ref={dropdownRef}>
       <button
         type="button"
         className="dropdown-trigger"

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
-import { Scope } from '@unform/core';
 import Button from '../Button';
 import FlagCheckbox from './FlagCheckbox';
 
@@ -105,21 +104,19 @@ export default function CourseCheckboxGroup({
         />
       )}
 
-      <Slide numberOfSlides={numberOfSlides}>
-        <Scope path="courses">
-          <div className="slide-items-container" ref={slideItemsContainerRef}>
-            {coursesWithInputName.map(course => (
-              <div className="slide-item" key={course.id}>
-                <FlagCheckbox
-                  name={course.inputName}
-                  label={course.name}
-                  course={course.inputName}
-                  value={course.id}
-                />
-              </div>
-            ))}
-          </div>
-        </Scope>
+      <Slide $numberOfSlides={numberOfSlides}>
+        <div className="slide-items-container" ref={slideItemsContainerRef}>
+          {coursesWithInputName.map(course => (
+            <div className="slide-item" key={course.id}>
+              <FlagCheckbox
+                name={`courses.${course.inputName}`}
+                label={course.name}
+                course={course.inputName}
+                value={course.id}
+              />
+            </div>
+          ))}
+        </div>
       </Slide>
 
       {isPhoneOnly && (

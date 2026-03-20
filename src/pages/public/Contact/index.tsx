@@ -1,6 +1,6 @@
-import { SubmitHandler, FormHandles } from '@unform/core';
-import { Form } from '@unform/web';
-import { useCallback, useRef } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -18,56 +18,43 @@ interface IFormData {
   message: string;
 }
 
+const schema = Yup.object().shape({
+  first_name: Yup.string()
+    .min(3, 'O nome deve possuir ao menos 3 letras.')
+    .required('O nome é obrigatório.'),
+  last_name: Yup.string(),
+  email: Yup.string()
+    .email('O email deve ser um email válido.')
+    .required('O email é obrigatório.'),
+  phone: Yup.string()
+    .matches(
+      /^(?:(\d{2}))(?:((?:9\d|[2-9])\d{3})(\d{4}))$/g,
+      'O telefone deve ser um número válido (DDD + número)',
+    )
+    .required('O telefone é obrigatório'),
+  subject: Yup.string().required('O assunto é obrigatório'),
+  message: Yup.string().required('A mensagem é obrigatória'),
+});
+
 const Contact: React.FC = () => {
-  const formRef = useRef<FormHandles>(null);
+  const methods = useForm<IFormData>({ resolver: yupResolver(schema) });
 
-  const handleSubmit: SubmitHandler<IFormData> = useCallback(async data => {
-    try {
-      formRef.current?.setErrors({});
+  const onSubmit = useCallback(
+    async (data: IFormData) => {
+      try {
+        await api.post('questions', data);
 
-      const schema = Yup.object().shape({
-        first_name: Yup.string()
-          .min(3, 'O nome deve possuir ao menos 3 letras.')
-          .required('O nome é obrigatório.'),
-        last_name: Yup.string(),
-        email: Yup.string()
-          .email('O email deve ser um email válido.')
-          .required('O email é obrigatório.'),
-        phone: Yup.string()
-          .matches(
-            /^(?:(\d{2}))(?:((?:9\d|[2-9])\d{3})(\d{4}))$/g,
-            'O telefone deve ser um número válido (DDD + número)',
-          )
-          .required('O telefone é obrigatório'),
-        subject: Yup.string().required('O assunto é obrigatório'),
-        message: Yup.string().required('A mensagem é obrigatória'),
-      });
+        toast.success(
+          'Mensagem enviada com sucesso! Em breve entraremos em contato.',
+        );
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-
-      await api.post('questions', data);
-
-      toast.success(
-        'Mensagem enviada com sucesso! Em breve entraremos em contato.',
-      );
-
-      formRef.current?.setErrors({});
-      formRef.current?.reset();
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const validationErrors: Record<string, string> = {};
-
-        error.inner.forEach(err => {
-          if (err.path) validationErrors[err.path] = err.message;
-        });
-        formRef.current?.setErrors(validationErrors);
-      } else {
+        methods.reset();
+      } catch (error) {
         toast.error('Um erro inesperado ocorreu. Por favor, tente novamente.');
       }
-    }
-  }, []);
+    },
+    [methods],
+  );
 
   return (
     <Container>
@@ -78,18 +65,20 @@ const Contact: React.FC = () => {
         entrarmos em contato com você.
       </p>
 
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        <Input label="Nome" name="first_name" />
-        <Input label="Sobrenome" name="last_name" />
-        <Input type="email" label="E-mail" name="email" />
-        <Input label="Telefone" name="phone" />
-        <Input label="Assunto" name="subject" />
-        <Input label="Mensagem" multiline rows={4} name="message" />
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <Input label="Nome" name="first_name" />
+          <Input label="Sobrenome" name="last_name" />
+          <Input type="email" label="E-mail" name="email" />
+          <Input label="Telefone" name="phone" />
+          <Input label="Assunto" name="subject" />
+          <Input label="Mensagem" multiline rows={4} name="message" />
 
-        <Button block type="submit">
-          Enviar
-        </Button>
-      </Form>
+          <Button block type="submit">
+            Enviar
+          </Button>
+        </form>
+      </FormProvider>
     </Container>
   );
 };

@@ -34,7 +34,7 @@ export const Container = styled.div<ContainerProps>`
       }
 
       ${hasError &&
-      /* eslint-disable */ css`
+        css`
       /* eslint-enable */
         &__control {
           border-color: var(--color-danger-default);

@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdEdit, MdSearch } from 'react-icons/md';
-import { FormHandles } from '@unform/core';
-import { Form } from '@unform/web';
+import { useForm, FormProvider } from 'react-hook-form';
 
 import { toast } from 'react-toastify';
-import { ReactComponent as UsaFlag } from '../../../assets/flags/usa-square.svg';
-import { ReactComponent as SpainFlag } from '../../../assets/flags/spain-square.svg';
-import { ReactComponent as FranceFlag } from '../../../assets/flags/france-square.svg';
-import { ReactComponent as KoreaFlag } from '../../../assets/flags/korea-square.svg';
-import { ReactComponent as GermanyFlag } from '../../../assets/flags/germany-square.svg';
+import UsaFlag from '../../../assets/flags/usa-square.svg?react';
+import SpainFlag from '../../../assets/flags/spain-square.svg?react';
+import FranceFlag from '../../../assets/flags/france-square.svg?react';
+import KoreaFlag from '../../../assets/flags/korea-square.svg?react';
+import GermanyFlag from '../../../assets/flags/germany-square.svg?react';
 
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
@@ -132,7 +131,7 @@ const Students: React.FC = () => {
     });
   }
 
-  const formRef = useRef<FormHandles>(null);
+  const searchMethods = useForm<{ search: string }>();
 
   useEffect(() => {
     async function loadCourses() {
@@ -262,7 +261,7 @@ const Students: React.FC = () => {
   if (editingStudent >= 0) {
     const studentCourses: any = {};
 
-    // eslint-disable-next-line no-plusplus
+     
     for (let i = 0; i < students[editingStudent].courses.length; i++) {
       const course = students[editingStudent].courses[i];
       studentCourses[course.flag] = course.id;
@@ -360,23 +359,24 @@ const Students: React.FC = () => {
               )}
             </div>
 
-            <Form
-              ref={formRef}
-              onSubmit={(data: { search: string }) => {
-                handleSearch(data.search);
-              }}
-            >
-              <div className="search-box">
-                <Input name="search" placeholder="Pesquisar" />
-                <Button
-                  type="submit"
-                  iconOnly
-                  icon={MdSearch}
-                  color="neutral"
-                  variant="ghost"
-                />
-              </div>
-            </Form>
+            <FormProvider {...searchMethods}>
+              <form
+                onSubmit={searchMethods.handleSubmit((data) => {
+                  handleSearch(data.search);
+                })}
+              >
+                <div className="search-box">
+                  <Input name="search" placeholder="Pesquisar" />
+                  <Button
+                    type="submit"
+                    iconOnly
+                    icon={MdSearch}
+                    color="neutral"
+                    variant="ghost"
+                  />
+                </div>
+              </form>
+            </FormProvider>
           </Filters>
         </div>
 

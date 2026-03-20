@@ -4,7 +4,7 @@ import mediaQuery from '../../../utils/mediaQuery';
 
 /* TYPES */
 type MemberProps = {
-  isSelected?: boolean;
+  $isSelected?: boolean;
 };
 
 /* STYLES */
@@ -121,7 +121,7 @@ const heading_x_small = 'var(--font-heading-x-small)';
 const body_normal_heavy = 'var(--font-body-normal-heavy)';
 
 export const Member = styled.div<MemberProps>`
-  ${({ isSelected }) => css`
+  ${({ $isSelected }) => css`
     --member-transition-values: 500ms ease;
 
     position: absolute;
@@ -135,12 +135,12 @@ export const Member = styled.div<MemberProps>`
 
     &:nth-child(2) {
       left: 5%;
-      transform: ${isSelected ? 'translateX(-10%)' : 'initial'};
+      transform: ${$isSelected ? 'translateX(-10%)' : 'initial'};
       bottom: 5%;
 
       ${mediaQuery.tabletPortraitUp} {
         left: 12%;
-        transform: ${isSelected ? 'translateX(-15%)' : 'initial'};
+        transform: ${$isSelected ? 'translateX(-15%)' : 'initial'};
         bottom: 10%;
       }
 
@@ -155,24 +155,24 @@ export const Member = styled.div<MemberProps>`
 
     &:nth-child(3) {
       right: 5%;
-      transform: ${isSelected ? 'translateX(10%)' : 'initial'};
+      transform: ${$isSelected ? 'translateX(10%)' : 'initial'};
       bottom: 5%;
 
       ${mediaQuery.tabletPortraitUp} {
         right: 12%;
-        transform: ${isSelected ? 'translateX(15%)' : 'initial'};
+        transform: ${$isSelected ? 'translateX(15%)' : 'initial'};
         bottom: 10%;
       }
     }
 
     img {
       display: block;
-      max-width: ${isSelected ? 'min(40vw, 18rem)' : 'min(28vw, 12rem)'};
-      border-radius: ${`var(--radius-${isSelected ? 'x-large' : 'medium'})`};
+      max-width: ${$isSelected ? 'min(40vw, 18rem)' : 'min(28vw, 12rem)'};
+      border-radius: ${`var(--radius-${$isSelected ? 'x-large' : 'medium'})`};
       transition: max-width var(--member-transition-values);
 
       ${mediaQuery.tabletPortraitUp} {
-        max-width: ${isSelected ? '16rem' : '10rem'};
+        max-width: ${$isSelected ? '16rem' : '10rem'};
       }
 
       ${mediaQuery.custom(768)} {
@@ -187,7 +187,7 @@ export const Member = styled.div<MemberProps>`
 
     .legend {
       background-color: var(--color-off-white);
-      border-radius: ${`var(--radius-${isSelected ? 'x-large' : 'medium'})`};
+      border-radius: ${`var(--radius-${$isSelected ? 'x-large' : 'medium'})`};
       box-shadow: var(--elevation-large);
       padding: 0.8rem 1.6rem;
       text-align: center;
@@ -196,7 +196,7 @@ export const Member = styled.div<MemberProps>`
       position: absolute;
       right: 1.2rem;
       bottom: -1.6rem;
-      transform: ${isSelected ? 'translate(-0.8rem, 1.6rem)' : 'initial'};
+      transform: ${$isSelected ? 'translate(-0.8rem, 1.6rem)' : 'initial'};
 
       width: max-content;
       transition: var(--member-transition-values);
@@ -205,11 +205,11 @@ export const Member = styled.div<MemberProps>`
       ${mediaQuery.tabletPortraitUp} {
         right: 2.4rem;
         bottom: -1.6rem;
-        transform: ${isSelected ? 'translate(-0.8rem, 1.6rem)' : 'initial'};
+        transform: ${$isSelected ? 'translate(-0.8rem, 1.6rem)' : 'initial'};
       }
 
       p {
-        font: ${isSelected ? heading_x_small : body_normal_heavy};
+        font: ${$isSelected ? heading_x_small : body_normal_heavy};
         color: var(--color-title-active);
         transition: font var(--member-transition-values);
       }
@@ -225,10 +225,10 @@ export const Member = styled.div<MemberProps>`
         --job-hiding: max-width var(--job-transition) var(--job-delay),
           max-height var(--job-transition);
 
-        max-width: ${isSelected ? '40rem' : '0'};
-        max-height: ${isSelected ? '5rem' : '0'};
+        max-width: ${$isSelected ? '40rem' : '0'};
+        max-height: ${$isSelected ? '5rem' : '0'};
         overflow: hidden;
-        transition: ${isSelected ? 'var(--job-showing)' : 'var(--job-hiding)'};
+        transition: ${$isSelected ? 'var(--job-showing)' : 'var(--job-hiding)'};
 
         span {
           display: block;

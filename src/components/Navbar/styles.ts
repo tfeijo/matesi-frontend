@@ -66,7 +66,7 @@ export const navbarLinkStyle = css`
   }
 `;
 
-export const NavMenu = styled.nav<{ isOpen: boolean }>`
+export const NavMenu = styled.nav<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
   bottom: 0;
@@ -75,7 +75,7 @@ export const NavMenu = styled.nav<{ isOpen: boolean }>`
   background-color: var(--color-secondary-default);
   transition: transform 0.4s ease-in-out;
 
-  transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(100%)')};
+  transform: ${({ $isOpen }) => ($isOpen ? 'translateX(0)' : 'translateX(100%)')};
 
   ${mediaQuery.tabletLandscapeUp} {
     position: initial;

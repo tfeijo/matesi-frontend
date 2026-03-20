@@ -11,6 +11,7 @@ type DropdownComponent<P> = React.FC<P> & {
 type DropdownProps = {
   triggerTitle: string;
   className?: string;
+  children?: React.ReactNode;
 };
 
 const Dropdown: DropdownComponent<DropdownProps> = ({
@@ -54,7 +55,7 @@ const Dropdown: DropdownComponent<DropdownProps> = ({
   );
 };
 
-const Item: React.FC = ({ children }) => (
+const Item: React.FC<React.PropsWithChildren> = ({ children }) => (
   <DropdownItem>{children}</DropdownItem>
 );
 

@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { FormHandles } from '@unform/core';
+import { useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { MdChevronLeft, MdSearch, MdUndo } from 'react-icons/md';
 import {
   RiCloseLine,
@@ -30,7 +30,7 @@ const MailList: React.FC = () => {
     handleLoadNextPage,
     handleFilter,
   } = useMailbox();
-  const searchFormRef = useRef<FormHandles>(null);
+  const searchMethods = useForm<{ search: string }>();
   const [isSearching, setIsSearching] = useState(false);
 
   const { isTabletLandscapeUp } = useBreakpoints();
@@ -57,16 +57,16 @@ const MailList: React.FC = () => {
 
   return (
     <Container>
-      <Header isSearching={isSearching}>
+      <Header $isSearching={isSearching}>
         <h2>
           {paginationInfo.totalRegisters}{' '}
           {paginationInfo.totalRegisters === 1 ? 'Mensagem' : 'Mensagens'}
         </h2>
 
+        <FormProvider {...searchMethods}>
         <SearchForm
-          isSearching={isSearching}
-          ref={searchFormRef}
-          onSubmit={(data: { search: string }) => handleFilter(data.search)}
+          $isSearching={isSearching}
+          onSubmit={searchMethods.handleSubmit((data) => handleFilter(data.search))}
         >
           <Button
             type="button"
@@ -89,6 +89,7 @@ const MailList: React.FC = () => {
             />
           </div>
         </SearchForm>
+        </FormProvider>
       </Header>
 
       <ul>
@@ -108,8 +109,8 @@ const MailList: React.FC = () => {
           ) => (
             <ListItem
               key={id}
-              isActive={selectedMessage === index}
-              isRead={isRead}
+              $isActive={selectedMessage === index}
+              $isRead={isRead}
             >
               <div className="info">
                 <h4>

@@ -1,4 +1,4 @@
-import { ReactComponent as ScrollDownIcon } from '../../../assets/methodology/scroll-down.svg';
+import ScrollDownIcon from '../../../assets/methodology/scroll-down.svg?react';
 import manReading from '../../../assets/methodology/man-reading.png';
 import helpingHandsPhone from '../../../assets/methodology/helping-hands-phone.png';
 import helpingHandsTabletUp from '../../../assets/methodology/helping-hands-tablet-up.png';

@@ -7,7 +7,7 @@ import BannerCTA from '../BannerCTA';
 function CourseWrapper({ hero, travels, about, gallery }: CourseWrapperProps) {
   return (
     <main>
-      <Hero backgroundUrl={hero.backgroundUrl}>
+      <Hero $backgroundUrl={hero.backgroundUrl}>
         <div className="container">
           <h1>{hero.title}</h1>
 
