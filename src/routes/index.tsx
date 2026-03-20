@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Home from '../pages/public/Home';
 
@@ -15,39 +15,131 @@ import Contact from '../pages/public/Contact';
 import Login from '../pages/public/Login';
 import Enroll from '../pages/public/Enroll';
 
-import WorkingUsMailbox from '../pages/private/Mailbox/WorkingUs';
-import EnrollMailbox from '../pages/private/Mailbox/Enroll';
-
+import Mailbox from '../pages/private/Mailbox';
 import Students from '../pages/private/Students';
 
-import UnderConstruction from '../pages/public/UnderConstruction';
+import ProtectedRoute from './Route';
 
-const Routes = () => (
-  <Switch>
-    <Route path="*" component={UnderConstruction} />
+const AppRoutes = () => (
+  <Routes>
+    <Route
+      path="/"
+      element={
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+      }
+    />
 
-    <Route path="/" exact component={Home} />
+    <Route
+      path="/cursos/ingles"
+      element={
+        <ProtectedRoute>
+          <English />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/cursos/espanhol"
+      element={
+        <ProtectedRoute>
+          <Spanish />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/cursos/frances"
+      element={
+        <ProtectedRoute>
+          <French />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/cursos/coreano"
+      element={
+        <ProtectedRoute>
+          <Korean />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/cursos/alemao"
+      element={
+        <ProtectedRoute>
+          <German />
+        </ProtectedRoute>
+      }
+    />
 
-    <Route path="/cursos/ingles" component={English} />
-    <Route path="/cursos/espanhol" component={Spanish} />
-    <Route path="/cursos/frances" component={French} />
-    <Route path="/cursos/coreano" component={Korean} />
-    <Route path="/cursos/alemao" component={German} />
+    <Route
+      path="/metodologia"
+      element={
+        <ProtectedRoute>
+          <Methodology />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/sobre-nos"
+      element={
+        <ProtectedRoute>
+          <About />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/trabalhe-conosco"
+      element={
+        <ProtectedRoute>
+          <WorkingUs />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/contato"
+      element={
+        <ProtectedRoute>
+          <Contact />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/matricular"
+      element={
+        <ProtectedRoute>
+          <Enroll />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/entrar"
+      element={
+        <ProtectedRoute>
+          <Login />
+        </ProtectedRoute>
+      }
+    />
 
-    <Route path="/metodologia" component={Methodology} />
-    <Route path="/sobre-nos" component={About} />
-    <Route path="/trabalhe-conosco" component={WorkingUs} />
-    <Route path="/contato" component={Contact} />
-    <Route path="/matricular" component={Enroll} />
-    <Route path="/entrar" component={Login} />
+    <Route
+      path="/mensagens/*"
+      element={
+        <ProtectedRoute isAdmin>
+          <Mailbox />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/matriculados"
+      element={
+        <ProtectedRoute isAdmin>
+          <Students />
+        </ProtectedRoute>
+      }
+    />
 
-    <Route path="/mensagens/trabalhe-conosco" component={WorkingUsMailbox} />
-    <Route path="/mensagens/matriculas" component={EnrollMailbox} />
-
-    <Route path="/alunos" component={Students} />
-
-    <Route component={() => <Redirect to="/" />} />
-  </Switch>
+    <Route path="*" element={<Navigate to="/" replace />} />
+  </Routes>
 );
 
-export default Routes;
+export default AppRoutes;

@@ -1,5 +1,157 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+
+import Button from '../../../components/Button';
+import CourseCheckboxGroup from '../../../components/CourseCheckboxGroup';
+import Input from '../../../components/Input';
+import Loader from '../../../components/Loader';
+import api from '../../../services/api';
+
+import { Container, FailedLoadingResource } from './styles';
+import ScrollToTop from '../../../components/ScrollToTop';
+
+interface FormCourses {
+  english: string;
+  french: string;
+  spanish: string;
+  korean: string;
+  german: string;
+}
+
+interface IFormData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  courses: FormCourses;
+}
+
+interface Course {
+  id: string;
+  name: string;
+}
+
+type TKey = keyof FormCourses;
+
+const schema = Yup.object().shape({
+  first_name: Yup.string()
+    .min(3, 'O nome deve possuir ao menos 3 letras.')
+    .required('O nome é obrigatório.'),
+  last_name: Yup.string()
+    .min(3, 'O sobrenome deve possuir ao menos 3 letras.')
+    .required('O sobrenome é obrigatório.'),
+  email: Yup.string()
+    .email('O email deve ser um email válido.')
+    .required('O email é obrigatório.'),
+  phone: Yup.string()
+    .matches(
+      /^(?:(\d{2}))(?:((?:9\d|[2-9])\d{3})(\d{4}))$/g,
+      'O telefone deve ser um número válido (DDD + número)',
+    )
+    .required('O telefone é obrigatório'),
+});
+
 const Enroll: React.FC = () => {
-  return <h1>Enroll</h1>;
+  const methods = useForm<IFormData>({ resolver: yupResolver(schema) });
+  const [courses, setCourses] = useState<Course[] | null>(null);
+  const [coursesError, setCoursesError] = useState('');
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const { data } = await api.get('courses');
+
+        setCourses(data);
+      } catch (error) {
+        console.log(error);
+        setCourses([]);
+      }
+    }
+
+    loadCourses();
+  }, []);
+
+  const onSubmit = useCallback(
+    async (data: IFormData) => {
+      try {
+        setCoursesError('');
+
+        const selectedCourses = Object.keys(data.courses)
+          .map(key => data.courses[key as TKey])
+          .filter(course => course);
+
+        if (selectedCourses.length === 0) {
+          setCoursesError('Ao menos um curso deve ser selecionado');
+          return;
+        }
+
+        const formData = {
+          first_name: data.first_name,
+          last_name: data.last_name,
+          email: data.email,
+          phone: data.phone,
+          courses_id: selectedCourses,
+        };
+
+        await api.post('registrations', formData);
+
+        toast.success('Pré-matricula realizada com sucesso!');
+
+        setCoursesError('');
+        methods.reset();
+      } catch (error) {
+        toast.error('Um erro inesperado ocorreu. Por favor, tente novamente');
+      }
+    },
+    [methods],
+  );
+
+  if (courses === null) return <Loader size={48} style={{ height: '50vh' }} />;
+
+  return (
+    <>
+      {courses.length === 0 ? (
+        <FailedLoadingResource>
+          <h1>
+            Não foi possível carregar os recursos necessários. Por favor, tente
+            novamente.
+          </h1>
+        </FailedLoadingResource>
+      ) : (
+        <Container>
+          <h1>Venha estudar conosco</h1>
+
+          <p>
+            Faça sua pré-matrícula para os cursos de seu interesse e aguarde o
+            nosso contato para confirmação
+          </p>
+
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)}>
+              <div className="course-selection">
+                <h2>Clique no(s) idioma(s) que deseja cursar</h2>
+                {courses && <CourseCheckboxGroup courses={courses} />}
+                {coursesError && (
+                  <span className="courses-error">{coursesError}</span>
+                )}
+              </div>
+              <Input label="Nome" name="first_name" />
+              <Input label="Sobrenome" name="last_name" />
+              <Input type="email" label="E-mail" name="email" />
+              <Input label="Telefone" name="phone" />
+
+              <Button block type="submit">
+                Concluir pré-matrícula
+              </Button>
+            </form>
+          </FormProvider>
+        </Container>
+      )}
+    </>
+  );
 };
 
 export default Enroll;

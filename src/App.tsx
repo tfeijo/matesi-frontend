@@ -1,23 +1,28 @@
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import { ToastContainer } from 'react-toastify';
+
+import { AuthProvider } from './context/AuthContext';
+
+import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
+
+import Routes from './routes';
 
 import GlobalStyles from './styles/global';
-import theme from './styles/theme';
 
-// import Footer from './components/Footer';
-// import Header from './components/Header';
-import Routes from './routes';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <AuthProvider>
       <BrowserRouter>
-        {/* <Header /> */}
+        <ScrollToTop />
+        <Navbar />
         <Routes />
-        {/* <Footer /> */}
         <GlobalStyles />
+        <ToastContainer />
       </BrowserRouter>
-    </ThemeProvider>
+    </AuthProvider>
   );
 }
 
