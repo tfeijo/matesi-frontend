@@ -115,8 +115,6 @@ const Home: React.FC = () => {
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
             linkTo="/cursos/ingles"
             inClass
-            disabled
-            disabledMotivation="Devido a pandemia não é possível a realização de aulas presenciais."
           />
 
           <CourseCard
@@ -125,8 +123,6 @@ const Home: React.FC = () => {
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros, lectus aenean aliquam duis dictum nec et."
             linkTo="/cursos/espanhol"
             inClass
-            disabled
-            disabledMotivation="Devido a pandemia não é possível a realização de aulas presenciais."
           />
         </div>
       </Courses>
